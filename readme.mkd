@@ -1,0 +1,7 @@
+This is the working repository for Nonolith Lab's CEE.
+
+Development is ongoing - currently, this repo contains the design for our development boards, without any attached microcontroller.
+
+Please visit [our Kickstarter!](www.kickstarter.com/projects/itdaniher/cee-the-usb-analog-electronics-multi-tool)
+
+All CAD files, schematics, and board layouts for this project are released under a [CC-by-SA(Share-Alike) license](http://creativecommons.org/licenses/by-sa/3.0/).
