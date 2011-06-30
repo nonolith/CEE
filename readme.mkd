@@ -1,4 +1,4 @@
-This is the working repository for Nonolith Lab's CEE.
+This is the working repository for Nonolith Labs CEE.
 
 Development is ongoing - currently, this repo contains the design for our development boards, without any attached microcontroller.
 
