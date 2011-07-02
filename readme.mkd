@@ -1,4 +1,4 @@
-**Available for pre-order on [our Kickstarter!](http://www.kickstarter.com/projects/itdaniher/cee-the-usb-analog-electronics-multi-tool)!**
+**Available for pre-order on [our Kickstarter](http://www.kickstarter.com/projects/itdaniher/cee-the-usb-analog-electronics-multi-tool)!**
 
 The CEE (control · experiment · explore) is an analog multitool. By sourcing and measuring voltage and current, the CEE opens up a world that has previously been restricted by monolithic, bulky, and hard-to-use tools. Learners can explore a wide range of concepts including everything from AC/DC electricity and resistance to work / energy, torque / speed, heat flow, and electrochemistry. As tinkerers, we've used our proof-of-concept boards as a multimeter to sort components in our junk bins, a programmable interface device to test new sensors, a power supply to fuel our breadboards, a web-based datalogger, and every possible combination therein. 
 
