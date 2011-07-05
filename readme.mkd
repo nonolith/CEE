@@ -1,7 +1,24 @@
-This is the working repository for Nonolith Labs CEE.
+**Available for pre-order on [our Kickstarter](http://www.kickstarter.com/projects/itdaniher/cee-the-usb-analog-electronics-multi-tool)!**
+
+The CEE (control · experiment · explore) is an analog multitool. By sourcing and measuring voltage and current, the CEE opens up a world that has previously been restricted by monolithic, bulky, and hard-to-use tools. Learners can explore a wide range of concepts including everything from AC/DC electricity and resistance to work / energy, torque / speed, heat flow, and electrochemistry. As tinkerers, we've used our proof-of-concept boards as a multimeter to sort components in our junk bins, a programmable interface device to test new sensors, a power supply to fuel our breadboards, a web-based datalogger, and every possible combination therein. 
+
+**Features**
+
+  - tightly integrated, well documented, 100% open-source software for data analysis and real-time measurement
+  - flexible drivers offer integration with existing sensors, actuators, and software
+  - web-based user interface makes collaboration seamless and painless across Mac, Windows, and Linux, in the garage, in the lab, and at school
+  - USB powered and controlled, requiring only one cable
+  - sub-millivolt and sub-milliamp precision and accuracy
+  - two watt power output, allowing for direct use with a wide range of motors, lights, and sensors
+  - two channels, capable of sourcing and measuring up to 5V and 200mA each
+  - upgradeable to 2A current with external power supply - some soldering required
+  - H-bridge for automatic polarity
+  - 44.1k samples per second of voltage & current measurement at 10bit resolution
+  - 800 samples per second at 12bit resolution (secondary ADC)
+  - 20k samples per second voltage & current control at 12bit resolution
+  - 72MHz ARM Cortex M3 processor
+
 
 Development is ongoing - currently, this repo contains the design for our development boards, without any attached microcontroller.
-
-Please visit [our Kickstarter!](www.kickstarter.com/projects/itdaniher/cee-the-usb-analog-electronics-multi-tool)
 
 All CAD files, schematics, and board layouts for this project are released under a [CC-by-SA(Share-Alike) license](http://creativecommons.org/licenses/by-sa/3.0/).
