@@ -12,13 +12,10 @@ The CEE (control · experiment · explore) is an analog multitool. By sourcing a
   - two watt power output, allowing for direct use with a wide range of motors, lights, and sensors
   - two channels, capable of sourcing and measuring up to 5V and 200mA each
   - upgradeable to 2A current with external power supply - some soldering required
-  - H-bridge for automatic polarity
-  - 44.1k samples per second of voltage & current measurement at 10bit resolution
-  - 800 samples per second at 12bit resolution (secondary ADC)
-  - 20k samples per second voltage & current control at 12bit resolution
-  - 72MHz ARM Cortex M3 processor
+  - 100k samples per second of voltage & current set/measurement at 12bit resolution
+  - 32MHz RISC processor - ATXMEGA32A4U 
 
 
-Development is ongoing - currently, this repo contains the design for our development boards, without any attached microcontroller.
+Development is ongoing.
 
 All CAD files, schematics, and board layouts for this project are released under a [CC-by-SA(Share-Alike) license](http://creativecommons.org/licenses/by-sa/3.0/).
