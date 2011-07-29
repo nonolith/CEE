@@ -1,6 +1,0 @@
-[submodule "firmware/microbuilder"]
-	path = firmware/microbuilder
-	url = git://github.com/microbuilder/LPC1343CodeBase.git
-[submodule "firmware/lufa_usb"]
-	path = firmware/lufa_usb
-	url = git://github.com/nonolith/LUFA-LPC13xx.git
