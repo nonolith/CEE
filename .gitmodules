@@ -1,0 +1,3 @@
+[submodule "firmware/usb"]
+	path = firmware/usb
+	url = git://github.com/nonolith/USB-XMEGA.git
