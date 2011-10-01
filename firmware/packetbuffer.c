@@ -6,17 +6,19 @@
 
 #include "packetbuffer.h"
 
-unsigned char in_buf[PACKETS_BUFFER][IN_PACKET_SIZE] ATTR_ALIGNED(2);
-unsigned char out_buf[PACKETS_BUFFER][OUT_PACKET_SIZE] ATTR_ALIGNED(2);
+uint8_t in_buf[PACKETS_BUFFER][IN_PACKET_SIZE] ATTR_ALIGNED(2);
+uint8_t out_buf[PACKETS_BUFFER][OUT_PACKET_SIZE] ATTR_ALIGNED(2);
 
-unsigned char in_start_index=0;
-unsigned char in_end_index=0;
-unsigned char in_count=0;
+uint8_t in_start_index=0;
+uint8_t in_end_index=0;
+uint8_t in_count=0;
 
-unsigned char out_start_index=0;
-unsigned char out_end_index=0;
-unsigned char out_count=0;
+uint8_t out_start_index=0;
+uint8_t out_end_index=0;
+uint8_t out_count=0;
 
+
+//TODO: move USB code into USB lib
 void packetbuf_endpoint_init(void){
 	in_start_index = in_end_index = in_count = 0;
 	endpoints[1].in.CNT = IN_PACKET_SIZE;
@@ -31,8 +33,8 @@ void packetbuf_endpoint_init(void){
 }
 
 
-static void in_ringbuf_next_packet(void){
-	if ((endpoints[1].in.STATUS & USB_EP_TRNCOMPL0_bm) && in_ringbuf_can_read()){
+static void packetbuf_in_next_packet(void){
+	if ((endpoints[1].in.STATUS & USB_EP_TRNCOMPL0_bm) && packetbuf_in_can_read()){
 		endpoints[1].in.DATAPTR = (unsigned) in_buf[in_start_index];
 		endpoints[1].in.STATUS &= ~(USB_EP_TRNCOMPL0_bm | USB_EP_BUSNACK0_bm | USB_EP_OVF_bm);
 		in_start_index = (in_start_index+1)%PACKETS_BUFFER;
@@ -40,8 +42,8 @@ static void in_ringbuf_next_packet(void){
 	}
 }
 
-static void out_ringbuf_next_packet(void){
-	if ((endpoints[2].out.STATUS & USB_EP_TRNCOMPL0_bm) && out_ringbuf_can_write()){
+static void packetbuf_out_next_packet(void){
+	if ((endpoints[2].out.STATUS & USB_EP_TRNCOMPL0_bm) && packetbuf_out_can_write()){
 		endpoints[2].out.DATAPTR = (unsigned) out_buf[out_end_index];
 		endpoints[2].out.STATUS &= ~(USB_EP_TRNCOMPL0_bm | USB_EP_BUSNACK0_bm | USB_EP_OVF_bm);
 		out_end_index = (out_end_index+1)%PACKETS_BUFFER;
@@ -50,6 +52,6 @@ static void out_ringbuf_next_packet(void){
 }
 
 void packetbuf_endpoint_poll(void){
-	in_ringbuf_next_packet();
-	out_ringbuf_next_packet();
+	packetbuf_in_next_packet();
+	packetbuf_out_next_packet();
 }

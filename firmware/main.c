@@ -23,16 +23,16 @@ int main(void){
 		} while (TCC0.CNT < 500/*100*4*/);
 		TCC0.CNT=0;
 		
-		if (out_ringbuf_can_read()){
-			out_ringbuf_done_read();
+		if (packetbuf_out_can_read()){
+			packetbuf_out_done_read();
 		}
 		
-		if (in_ringbuf_can_write()){
-			unsigned char* buf = in_ringbuf_write_position();
+		if (packetbuf_in_can_write()){
+			uint8_t* buf = packetbuf_in_write_position();
 			buf[0] = in_seqno;
 			buf[1] = in_count;
 			buf[2] = out_count;
-			in_ringbuf_done_write();
+			packetbuf_in_done_write();
 		}
 		in_seqno++;
 	}

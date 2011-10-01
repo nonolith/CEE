@@ -24,21 +24,21 @@ extern unsigned char out_count;
 void packetbuf_endpoint_init(void);
 void packetbuf_endpoint_poll(void);
 
-inline bool in_ringbuf_can_read(void){return in_count>0;}
-inline bool in_ringbuf_can_write(void){return in_count<PACKETS_BUFFER;}
+inline static bool packetbuf_in_can_read(void){return in_count>0;}
+inline static bool packetbuf_in_can_write(void){return in_count<PACKETS_BUFFER;}
 
-inline bool out_ringbuf_can_read(void){return out_count>0;}
-inline bool out_ringbuf_can_write(void){return out_count<PACKETS_BUFFER;}
+inline static bool packetbuf_out_can_read(void){return out_count>0;}
+inline static bool packetbuf_out_can_write(void){return out_count<PACKETS_BUFFER;}
 
-inline void out_ringbuf_done_read(void){
+inline void packetbuf_out_done_read(void){
 	out_count--;
 	out_start_index = (out_start_index+1)%PACKETS_BUFFER;
 }
 
-inline void in_ringbuf_done_write(void){
+inline void packetbuf_in_done_write(void){
 	in_count++;
 	in_end_index = (in_end_index+1)%PACKETS_BUFFER;
 }
 
-inline unsigned char* in_ringbuf_write_position(void){return in_buf[in_end_index];}
-inline unsigned char* out_ringbuf_read_position(void){return out_buf[out_start_index];}
+inline unsigned char* packetbuf_in_write_position(void){return in_buf[in_end_index];}
+inline unsigned char* packetbuf_out_read_position(void){return out_buf[out_start_index];}
