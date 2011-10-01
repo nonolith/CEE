@@ -149,9 +149,9 @@ const USB_Descriptor_String_t PROGMEM XmegaExample_ManufacturerString =
  */
 const USB_Descriptor_String_t PROGMEM XmegaExample_ProductString =
 {
-	.Header                 = {.Size = USB_STRING_LEN(25), .Type = DTYPE_String},
+	.Header                 = {.Size = USB_STRING_LEN(8), .Type = DTYPE_String},
 
-	.UnicodeString          = L"xmega32a4u Example Device"
+	.UnicodeString          = L"CEE beta"
 };
 
 

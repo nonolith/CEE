@@ -115,10 +115,10 @@ include $(USB_PATH)/makefile
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = main.c                                               \
-	  Descriptors.c                                               \
-	  $(SRC_USB)
-
+SRC += $(SRC_USB)
+SRC += main.c
+SRC += Descriptors.c
+SRC += packetbuffer.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =
@@ -460,9 +460,6 @@ lss: $(TARGET).lss
 sym: $(TARGET).sym
 LIBNAME=lib$(TARGET).a
 lib: $(LIBNAME)
-
-$(warning $(OBJ))
-$(warning $(TARGET))
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
