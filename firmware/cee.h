@@ -12,6 +12,8 @@
 
 /* Function Prototypes: */
 void SetupHardware(void);
+void configSPI(void);
+void writeDAC(void);
 
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req);
 

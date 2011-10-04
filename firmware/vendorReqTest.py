@@ -16,13 +16,6 @@ def readADC(wValue=0, wIndex=0):
 	data = dev.ctrl_transfer(0x40|0x80, 0xA0, wValue, wIndex, 6)
 	return b12unpack(data[0:3]) + b12unpack(data[3:6])
 
+def writeDAC(wValue=0, wIndex=0):
+	data = dev.ctrl_transfer(0x40|0x80, 0xB0, wValue, wIndex, 6)
 
-i = 0
-startTime = time.time()
-while i < 1000:
-	print readADC(int(i), int(i+1))[-1]
-	i += 1
-endTime = time.time()
-
-print "took %f s to setup" % (startTime-setupTime)
-print "took %f s to execute 1000 ctrl transfers" % (endTime-startTime)

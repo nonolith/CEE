@@ -64,16 +64,19 @@ void writeDAC(uint8_t flags, uint16_t value){
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void SetupHardware(void){
+	PORTD.DIRSET = 1 << 2; // DAC SHDN pin output
+	PORTD.OUTSET = 1 << 2; // DAC SHDN pin high
 	PORTE.DIRSET = (1<<0) | (1<<1);
+	configSPI();
 	USB_ConfigureClock();
 	USB_Init();
 }
 
 void ADC_SampleSynchronous(IN_sample* s, uint8_t a, uint8_t b){
-	s->a_v = 444;
-	s->a_i = 555;
-	s->b_v = 888 + a;
-	s->b_i = 999 + b;
+	s->a_v = a&0x0FFF;
+	s->a_i = a&0xF000>>8;
+	s->b_v = b&0x0FFF;
+	s->b_i = b&0xF000>>8;
 }
 
 /** Event handler for the library USB Control Request reception event. */
@@ -86,7 +89,8 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				USB_ep0_send(sizeof(IN_sample));
 				break;
 			case 0xB0:
-				writeDAC(req->wIndex, req->wValue);
+				writeDAC((req->wIndex&0xFF), req->wValue);
+				USB_ep0_send(0);
 				break;
 		}
 		return true;
