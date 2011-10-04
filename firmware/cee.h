@@ -13,7 +13,7 @@
 /* Function Prototypes: */
 void SetupHardware(void);
 void configSPI(void);
-void writeDAC(void);
+void writeDAC(uint8_t flags, uint16_t value);
 
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req);
 
