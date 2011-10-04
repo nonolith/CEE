@@ -1,9 +1,10 @@
 // Firmware for CEE
 // http://nonolithlabs.com
 // (C) 2011 Kevin Mehall (Nonolith Labs) <km@kevinmehall.net>
-//
+// (C) 2011 Ian Daniher (Nonolith Labs) <ian@nonolithlabs.com>
 // Licensed under the terms of the GNU GPLv3+
 
+#define F_CPU 32000000UL 
 #include "cee.h"
 #include "packetbuffer.h"
 
@@ -38,14 +39,27 @@ int main(void){
 	}
 }
 
-/* Configures the XMEGA's USARTC1 to talk to the digital-analog converter */ 
+/* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
 void configSPI(void){
-	PORTC.DIRSET = (1<<3)|(1<<4)|(1<<5)|(1<<7); //LDAC, CS, SCK, TXD1 as outputs
+	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
 	USARTC1.BAUDCTRLA = 0; // 2MHz
 	USARTC1.BAUDCTRLB = 0b10100000; // 2MHz continued
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
-	PORTC.OUTSET = (1<<3)|(1<<4); // CS, LDAC high
+	PORTC.OUTSET = 1 << 3 | 1 << 4; // LDAC, CS high
+}
+
+/* Write a value to a specified channel of the ADC with specified flags. */
+void writeDAC(uint8_t channel, uint8_t flags, uint16_t value){
+	PORTC.OUTCLR = 1 << 4; // CS low
+	USARTC1.DATA = channel << 7 | flags | ((value >> 8) & 0xFF); // munge channel, flags, and four MSB of the value into a single byte
+	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
+	USARTC1.DATA = channel & 0xFF;
+	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
+	PORTC.OUTSET = 1 << 4; // CS high
+	PORTC.OUTCLR = 1 << 3; // LDAC low
+	_delay_us(.1); // LDAC delay
+	PORTC.OUTSET = 1 << 3; // LDAC high
 }
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
