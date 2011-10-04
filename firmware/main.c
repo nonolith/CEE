@@ -46,12 +46,20 @@ void SetupHardware(void){
 	USB_Init();
 }
 
+void ADC_SampleSynchronous(IN_sample* s){
+	s->a_v = 444;
+	s->a_i = 555;
+	s->b_v = 888;
+	s->b_i = 999;
+}
+
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
-		if (req->bRequest == 0x23){
-			//timer = req->wValue;
-			USB_ep0_send(0);
+		if(req->bRequest == 0xA0){
+			//req->wIndex and req->wValue are input data
+			ADC_SampleSynchronous((IN_sample *) ep0_buf_in);
+			USB_ep0_send(sizeof(IN_sample));
 			return true;
 		}
 	}
