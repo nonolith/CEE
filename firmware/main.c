@@ -38,10 +38,19 @@ int main(void){
 	}
 }
 
-/** Configures the board hardware and chip peripherals for the project's functionality. */
+/* Configures the XMEGA's USARTC1 to talk to the digital-analog converter */ 
+void configSPI(void){
+	PORTC.DIRSET = (1<<3)|(1<<4)|(1<<5)|(1<<7); //LDAC, CS, SCK, TXD1 as outputs
+	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
+	USARTC1.BAUDCTRLA = 0; // 2MHz
+	USARTC1.BAUDCTRLB = 0b10100000; // 2MHz continued
+	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
+	PORTC.OUTSET = (1<<3)|(1<<4); // CS, LDAC high
+}
+
+/* Configures the board hardware and chip peripherals for the project's functionality. */
 void SetupHardware(void){
 	PORTE.DIRSET = (1<<0) | (1<<1);
-	
 	USB_ConfigureClock();
 	USB_Init();
 }
