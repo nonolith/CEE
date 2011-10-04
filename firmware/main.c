@@ -50,11 +50,11 @@ void configSPI(void){
 }
 
 /* Write a value to a specified channel of the ADC with specified flags. */
-void writeDAC(uint8_t channel, uint8_t flags, uint16_t value){
+void writeDAC(uint8_t flags, uint16_t value){
 	PORTC.OUTCLR = 1 << 4; // CS low
-	USARTC1.DATA = channel << 7 | flags | ((value >> 8) & 0xFF); // munge channel, flags, and four MSB of the value into a single byte
+	USARTC1.DATA = flags | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
 	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
-	USARTC1.DATA = channel & 0xFF;
+	USARTC1.DATA = value & 0xFF;
 	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
 	PORTC.OUTSET = 1 << 4; // CS high
 	PORTC.OUTCLR = 1 << 3; // LDAC low
@@ -79,14 +79,18 @@ void ADC_SampleSynchronous(IN_sample* s, uint8_t a, uint8_t b){
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
-		if(req->bRequest == 0xA0){
-			//req->wIndex and req->wValue are input data
-			ADC_SampleSynchronous((IN_sample *) ep0_buf_in, req->wIndex, req->wValue);
-			USB_ep0_send(sizeof(IN_sample));
-			return true;
+		//req->wIndex and req->wValue are input data
+		switch(req->bRequest){
+			case 0xA0:
+				ADC_SampleSynchronous((IN_sample *) ep0_buf_in, req->wIndex, req->wValue);
+				USB_ep0_send(sizeof(IN_sample));
+				break;
+			case 0xB0:
+				writeDAC(req->wIndex, req->wValue);
+				break;
 		}
+		return true;
 	}
-	
 	return false;
 }
 
