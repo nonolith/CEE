@@ -4,7 +4,6 @@
 // (C) 2011 Ian Daniher (Nonolith Labs) <ian@nonolithlabs.com>
 // Licensed under the terms of the GNU GPLv3+
 
-#define F_CPU 32000000UL 
 #include "cee.h"
 #include "packetbuffer.h"
 
@@ -40,8 +39,8 @@ int main(void){
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
 void configDAC(void){
-	PORTD.DIRSET = 1 << 2; // DAC SHDN pin output
-	PORTD.OUTSET = 1 << 2; // DAC SHDN pin high
+	PORTD.DIRSET = 1 << 2; // DAC-SHDN as outputs
+	PORTD.OUTSET = 1 << 2; // DAC-SHDN high
 	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
 	USARTC1.BAUDCTRLA = 15;  // 1MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
@@ -49,6 +48,49 @@ void configDAC(void){
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
 	PORTC.OUTSET = 1 << 3 | 1 << 4; // LDAC, CS high
 	PORTC.OUTCLR = 1 << 5; // SCK low
+}
+
+/* Call me at beginning to set pin conditions for binary state pins */
+void configChannels(void){
+	PORTD.DIRSET = 1 << 5 | 1 << 3 | 1 << 1 | 1 << 0; // SHDN-INS-A, SWMODE-A, SHDN-INS-B, EN-OPA-A as outputs
+	PORTC.DIRSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B as outputs
+	PORTD.DIRCLR = 1 << 4; // TFLAG-A as input
+	PORTC.DIRCLR = 1 << 1; // TFLAG-B as input
+}
+
+void writeChannelA(uint8_t state){
+	switch (state) {
+		case SVMI:
+			PORTD.OUTSET = 1 << 3 | 1 << 0; // SWMODE-A, EN-OPA-A high
+			PORTD.OUTCLR = 1 << 5; // SHDN-INS-A low
+			break;
+		case SIMV:
+			PORTD.OUTSET = 1 << 0; // EN-OPA-A high
+			PORTD.OUTCLR = 1 << 5 | 1 << 3; // SWMODE-A, SHND-INS-A low
+			break;
+		case DISABLED:
+			PORTD.OUTSET = 1 << 3; // SHDN-INS-A high
+			PORTD.OUTCLR = 1 << 5 | 1 << 3; // SWMODE-A, EN-OPA-A low
+			break;
+	}
+}
+
+void writeChannelB(uint8_t state){
+	switch (state) {
+		case SVMI:
+			PORTC.OUTSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B high
+			PORTD.OUTCLR = 1 << 1; // SHDN-INS-B low
+			break;
+		case SIMV:
+			PORTC.OUTSET = 1 << 0; // EN-OPA-B high
+			PORTC.OUTCLR = 1 << 2; // SWMODE-B low
+			PORTD.OUTCLR = 1 << 1; // SHDN-INS-B low
+			break;
+		case DISABLED:
+			PORTC.OUTCLR = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B low
+			PORTD.OUTSET = 1 << 1; // SHDN-INS-B high
+			break;
+		}
 }
 
 /* Write a value to a specified channel of the ADC with specified flags. */
@@ -66,8 +108,9 @@ void writeDAC(uint8_t flags, uint16_t value){
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
-	PORTE.DIRSET = (1<<0) | (1<<1);
+	PORTE.DIRSET = 1 << 0 | 1 << 1; //debug LEDs
 	configDAC();
+	configChannels();
 	USB_ConfigureClock();
 	USB_Init();
 }

@@ -10,10 +10,21 @@
 
 #include "usb.h"
 
+#define F_CPU 32000000UL
+#define DISABLED 0
+#define SVMI 1                                                                                                                                                           
+#define SIMV 2
+#define A 0
+#define B 1
+
 /* Function Prototypes: */
 void configHardware(void);
 void configDAC(void);
 void writeDAC(uint8_t flags, uint16_t value);
+void configChannels(void);
+void writeChannelA(uint8_t state);
+void writeChannelB(uint8_t state);
+
 
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req);
 
