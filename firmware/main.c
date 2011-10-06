@@ -45,8 +45,8 @@ void configSPI(void){
 	PORTD.OUTSET = 1 << 2; // DAC SHDN pin high
 	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
-	USARTC1.BAUDCTRLA = 0; // 2MHz
-	USARTC1.BAUDCTRLB = 0b10100000; // 2MHz continued
+	USARTC1.BAUDCTRLA = 15;  // 1MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
+	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
 	PORTC.OUTSET = 1 << 3 | 1 << 4; // LDAC, CS high
 	PORTC.OUTCLR = 1 << 5; // SCK low
@@ -55,8 +55,9 @@ void configSPI(void){
 /* Write a value to a specified channel of the ADC with specified flags. */
 void writeDAC(uint8_t flags, uint16_t value){
 	PORTC.OUTCLR = 1 << 4; // CS low
-	USARTC1.DATA = flags | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
-	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
+	USARTC1.DATA = ((flags<<4) & 0xF0) | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
+	while(!(USARTC1.STATUS & USART_DREIF_bm)); // wait until we can write another byte
+	USARTC1.STATUS = USART_TXCIF_bm; // clear TX complete flag
 	USARTC1.DATA = value & 0xFF;
 	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
 	PORTC.OUTSET = 1 << 4; // CS high
@@ -89,11 +90,9 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				USB_ep0_send(sizeof(IN_sample));
 				break;
 			case 0xB0:
-				writeDAC((req->wIndex&0xFF)>>8, req->wValue);
-				ep0_buf_in[0] = (req->wIndex)>>8;
-				ep0_buf_in[1] = (req->wValue)>>8;
-				ep0_buf_in[2] = (req->wValue)&0xFF;
-				USB_ep0_send(3);
+				writeDAC(req->wIndex, req->wValue);
+				ep0_buf_in[0] = USARTC1.STATUS;
+				USB_ep0_send(1);
 				break;
 		}
 		return true;
