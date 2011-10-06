@@ -11,9 +11,8 @@
 unsigned char in_seqno = 0;
 
 int main(void){
-	SetupHardware();
+	configHardware();
 	sei();	
-	writeDAC(0xB0, 0x00FF);
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
 	packetbuf_endpoint_init();	
 	
@@ -40,7 +39,7 @@ int main(void){
 }
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
-void configSPI(void){
+void configDAC(void){
 	PORTD.DIRSET = 1 << 2; // DAC SHDN pin output
 	PORTD.OUTSET = 1 << 2; // DAC SHDN pin high
 	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
@@ -66,9 +65,9 @@ void writeDAC(uint8_t flags, uint16_t value){
 }
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
-void SetupHardware(void){
+void configHardware(void){
 	PORTE.DIRSET = (1<<0) | (1<<1);
-	configSPI();
+	configDAC();
 	USB_ConfigureClock();
 	USB_Init();
 }
