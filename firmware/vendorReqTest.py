@@ -19,3 +19,12 @@ def readADC(wValue=0, wIndex=0):
 def writeDAC(wIndex=0, wValue=0):
 	data = dev.ctrl_transfer(0x40|0x80, 0xB0, wValue, wIndex, 6)
 	return map(hex, data)
+
+def writeChannelA(wValue=0):
+	data = dev.ctrl_transfer(0x40|0x80, 0xCA, wValue, 0, 6)
+	return map(hex, data)
+
+def writeChannelB(wValue=0):
+	data = dev.ctrl_transfer(0x40|0x80, 0xCB, wValue, 0, 6)
+	return map(hex, data)
+

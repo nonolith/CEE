@@ -136,6 +136,14 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				ep0_buf_in[0] = USARTC1.STATUS;
 				USB_ep0_send(1);
 				break;
+			case 0xCB:
+				writeChannelB(req->wValue);
+				USB_ep0_send(0);
+				break;
+			case 0xCA:
+				writeChannelA(req->wValue);
+				USB_ep0_send(0);
+				break;
 		}
 		return true;
 	}
