@@ -56,6 +56,7 @@ void configChannels(void){
 	PORTC.DIRSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B as outputs
 	PORTD.DIRCLR = 1 << 4; // TFLAG-A as input
 	PORTC.DIRCLR = 1 << 1; // TFLAG-B as input
+	PORTB.DIRSET = 1 << 3; // Iset output low
 }
 
 void writeChannelA(uint8_t state){
