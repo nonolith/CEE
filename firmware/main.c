@@ -121,28 +121,62 @@ void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
-	PORTE.DIRSET = 1 << 0 | 1 << 1; //debug LEDs
+	PORTE.DIRSET = 1 << 0 | 1 << 1; // debug LEDs
 	initDAC();
+	initADC();
 	initChannels();
 	USB_ConfigureClock();
 	USB_Init();
 }
 
-void ADC_SampleSynchronous(IN_sample* s, uint8_t a, uint8_t b){
-	s->a_v = a;
-	s->a_i = a;
-	s->b_v = b;
-	s->b_i = b;
+void initADC(void){
+	ADCA.CTRLA = ADC_ENABLE_bm;
+	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | ADC_CONMODE_bm | ADC_IMPMODE_bm | ADC_CURRLIMIT_NO_gc;
+	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
+	ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc; // ADC CLK = 1MHz
+	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_DIFF_gc; // ADC DIFF without gain
+	ADCA.CH1.CTRL = ADC_CH_INPUTMODE_DIFF_gc;
+	ADCA.CH2.CTRL = ADC_CH_INPUTMODE_DIFF_gc;
+	ADCA.CH3.CTRL = ADC_CH_INPUTMODE_DIFF_gc;
+	ADCA.CH0.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc; // trigger interrupt on pin complete
+	ADCA.CH1.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc;
+	ADCA.CH2.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc;
+	ADCA.CH3.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_gm | ADC_CH_MUXPOS_PIN1_gc; // measure VS-A
+	ADCA.CH1.MUXCTRL = ADC_CH_MUXNEG_gm | ADC_CH_MUXPOS_PIN2_gc; // measure ADC-A
+	ADCA.CH2.MUXCTRL = ADC_CH_MUXNEG_gm | ADC_CH_MUXPOS_PIN6_gc; // measure ADC-B
+	ADCA.CH3.MUXCTRL = ADC_CH_MUXNEG_gm | ADC_CH_MUXPOS_PIN7_gc; // measure VS-B
 }
 
+void readADC(void){
+
+	ADCA.CTRLA |= ADC_CH0START_bm | ADC_CH1START_bm | ADC_CH2START_bm | ADC_CH3START_bm;
+
+	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
+	ADCA.CH0.INTFLAGS = ADC_CH_CHIF_bm; //reset INTFLAGS
+	s->b_i = ADCA.CH0.RES;
+
+	while (!ADCA.CH1.INTFLAGS);
+	ADCA.CH1.INTFLAGS = ADC_CH_CHIF_bm;
+	s->a_v = ADCA.CH1.RES;
+
+	while (!ADCA.CH2.INTFLAGS);
+	ADCA.CH2.INTFLAGS = ADC_CH_CHIF_bm;
+	s->b_v = ADCA.CH2.RES;
+
+	while (!ADCA.CH3.INTFLAGS);
+	ADCA.CH3.INTFLAGS = ADC_CH_CHIF_bm;
+	s->a_i = ADCA.CH3.RES;
+
+}
 
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
 		switch(req->bRequest){
 			case 0xA0:
-				ADC_SampleSynchronous((IN_sample *) ep0_buf_in, req->wIndex, req->wValue);
-				USB_ep0_send(sizeof(IN_sample));
+				readADC();
+				USB_ep0_send(6);
 				break;
 			case 0xAA:
 				writeChannel(0, req->wIndex, req->wValue);

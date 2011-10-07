@@ -19,8 +19,10 @@
 
 /* Function Prototypes: */
 void configHardware(void);
-void configDAC(void);
+void initDAC(void);
 void writeDAC(uint8_t flags, uint16_t value);
+void initADC(void);
+void readADC(void);
 void configChannels(void);
 void writeChannelA(uint8_t state);
 void writeChannelB(uint8_t state);
