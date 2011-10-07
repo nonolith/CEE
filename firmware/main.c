@@ -144,19 +144,6 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				ADC_SampleSynchronous((IN_sample *) ep0_buf_in, req->wIndex, req->wValue);
 				USB_ep0_send(sizeof(IN_sample));
 				break;
-			case 0xB0:
-				writeDAC(req->wIndex, req->wValue);
-				ep0_buf_in[0] = USARTC1.STATUS;
-				USB_ep0_send(1);
-				break;
-			case 0xCB:
-				configChannelB(req->wValue);
-				USB_ep0_send(0);
-				break;
-			case 0xCA:
-				configChannelA(req->wValue);
-				USB_ep0_send(0);
-				break;
 			case 0xAA:
 				writeChannel(0, req->wIndex, req->wValue);
 				USB_ep0_send(0);

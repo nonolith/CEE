@@ -1,5 +1,4 @@
 import usb.core
-import time
 
 MODE_DISABLED=0
 MODE_SVMI=1
@@ -22,19 +21,7 @@ class CEE(object):
 		
 	def readADC(self,wValue=0, wIndex=0):
 		data = self.dev.ctrl_transfer(0x40|0x80, 0xA0, wValue, wIndex, 6)
-		return b12unpack(data[0:3]) + b12unpack(data[3:6])
-
-	def writeDAC(self,wIndex=0, wValue=0):
-		data = self.dev.ctrl_transfer(0x40|0x80, 0xB0, wValue, wIndex, 6)
-		return map(hex, data)
-
-	def writeChannelA(self, wValue=0):
-		data = self.dev.ctrl_transfer(0x40|0x80, 0xCA, wValue, 0, 6)
-		return map(hex, data)
-
-	def writeChannelB(self, wValue=0):
-		data = self.dev.ctrl_transfer(0x40|0x80, 0xCB, wValue, 0, 6)
-		return map(hex, data)
+		return self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])
 
 	def set(self, chan, v=None, i=None):
 		cmd = 0xAA+chan
@@ -43,7 +30,7 @@ class CEE(object):
 			print dacval
 			self.dev.ctrl_transfer(0x40|0x80, cmd, dacval, MODE_SVMI, 6)
 		elif i is not None:
-			dacval = int(round(i/400.0*4095))+2048
+			dacval = int((2**12*(1.25+(45*.07*i)))/2.5)
 			print dacval
 			self.dev.ctrl_transfer(0x40|0x80, cmd, dacval, MODE_SIMV, 6)
 		else:
@@ -55,4 +42,5 @@ class CEE(object):
 	def setB(self, v=None, i=None):
 		self.set(1, v, i)
 
-cee = CEE()
+if __name__ == "__main__":
+	cee = CEE()
