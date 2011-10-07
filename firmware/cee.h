@@ -53,3 +53,8 @@ typedef struct OUT_packet{
 	OUT_sample data[10];
 } __attribute__((packed)) OUT_packet;
 
+// MCP4922 flags
+#define DACFLAG_CHANNEL	(1<<3)
+#define DACFLAG_BUF		(1<<2)
+#define DACFLAG_NO_MULT_REF	(1<<1)
+#define DACFLAG_ENABLE	(1<<0)

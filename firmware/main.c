@@ -38,7 +38,7 @@ int main(void){
 }
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
-void configDAC(void){
+void initDAC(void){
 	PORTD.DIRSET = 1 << 2; // DAC-SHDN as outputs
 	PORTD.OUTSET = 1 << 2; // DAC-SHDN high
 	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
@@ -51,7 +51,7 @@ void configDAC(void){
 }
 
 /* Call me at beginning to set pin conditions for binary state pins */
-void configChannels(void){
+void initChannels(void){
 	PORTD.DIRSET = 1 << 5 | 1 << 3 | 1 << 1 | 1 << 0; // SHDN-INS-A, SWMODE-A, SHDN-INS-B, EN-OPA-A as outputs
 	PORTC.DIRSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B as outputs
 	PORTD.DIRCLR = 1 << 4; // TFLAG-A as input
@@ -59,7 +59,7 @@ void configChannels(void){
 	PORTB.DIRSET = 1 << 3; // Iset output low
 }
 
-void writeChannelA(uint8_t state){
+void configChannelA(uint8_t state){
 	switch (state) {
 		case SVMI:
 			PORTD.OUTSET = 1 << 3 | 1 << 0; // SWMODE-A, EN-OPA-A high
@@ -76,7 +76,7 @@ void writeChannelA(uint8_t state){
 	}
 }
 
-void writeChannelB(uint8_t state){
+void configChannelB(uint8_t state){
 	switch (state) {
 		case SVMI:
 			PORTC.OUTSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B high
@@ -107,11 +107,23 @@ void writeDAC(uint8_t flags, uint16_t value){
 	PORTC.OUTSET = 1 << 3; // LDAC high
 }
 
+void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
+	uint8_t dacflags = 0;
+	if (channel) dacflags |= DACFLAG_CHANNEL;
+	if (state != DISABLED) dacflags |= DACFLAG_ENABLE;
+	if (state == SIMV) dacflags |= DACFLAG_NO_MULT_REF;
+
+	if (channel == 0) configChannelA(state);
+	else              configChannelB(state);
+
+	writeDAC(dacflags, value);
+}
+
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
 	PORTE.DIRSET = 1 << 0 | 1 << 1; //debug LEDs
-	configDAC();
-	configChannels();
+	initDAC();
+	initChannels();
 	USB_ConfigureClock();
 	USB_Init();
 }
@@ -123,10 +135,10 @@ void ADC_SampleSynchronous(IN_sample* s, uint8_t a, uint8_t b){
 	s->b_i = b;
 }
 
+
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
-		//req->wIndex and req->wValue are input data
 		switch(req->bRequest){
 			case 0xA0:
 				ADC_SampleSynchronous((IN_sample *) ep0_buf_in, req->wIndex, req->wValue);
@@ -138,11 +150,19 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				USB_ep0_send(1);
 				break;
 			case 0xCB:
-				writeChannelB(req->wValue);
+				configChannelB(req->wValue);
 				USB_ep0_send(0);
 				break;
 			case 0xCA:
-				writeChannelA(req->wValue);
+				configChannelA(req->wValue);
+				USB_ep0_send(0);
+				break;
+			case 0xAA:
+				writeChannel(0, req->wIndex, req->wValue);
+				USB_ep0_send(0);
+				break;
+			case 0xAB:
+				writeChannel(1, req->wIndex, req->wValue);
 				USB_ep0_send(0);
 				break;
 		}
