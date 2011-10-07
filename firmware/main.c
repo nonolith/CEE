@@ -148,7 +148,7 @@ void initADC(void){
 	ADCA.CH3.MUXCTRL = ADC_CH_MUXNEG_gm | ADC_CH_MUXPOS_PIN7_gc; // measure VS-B
 }
 
-void readADC(void){
+void readADC(IN_sample* s){
 
 	ADCA.CTRLA |= ADC_CH0START_bm | ADC_CH1START_bm | ADC_CH2START_bm | ADC_CH3START_bm;
 
@@ -175,8 +175,8 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
 		switch(req->bRequest){
 			case 0xA0:
-				readADC();
-				USB_ep0_send(6);
+				readADC((IN_sample *) ep0_buf_in);
+				USB_ep0_send(sizeof(IN_sample));
 				break;
 			case 0xAA:
 				writeChannel(0, req->wIndex, req->wValue);

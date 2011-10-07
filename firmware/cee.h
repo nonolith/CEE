@@ -22,7 +22,7 @@ void configHardware(void);
 void initDAC(void);
 void writeDAC(uint8_t flags, uint16_t value);
 void initADC(void);
-void readADC(void);
+void readADC(IN_sample);
 void configChannels(void);
 void writeChannelA(uint8_t state);
 void writeChannelB(uint8_t state);
