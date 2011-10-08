@@ -140,29 +140,29 @@ void initADC(void){
 
 void readADC(IN_sample* s){
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc;
-	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
-	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
-	s->a_i = ADCA.CH0.RES;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc; // VS-A
+	ADCA.CTRLA |= ADC_CH0START_bm // start conversion
+	while (!ADCA.CH0.INTFLAGS); // wait for conversion to finish
+	ADCA.INTFLAGS = ADC_CH0IF_bm; // reset INTFLAGS
+	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN2_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN2_gc; // ADC-A
 	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
-	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
+	while (!ADCA.CH0.INTFLAGS);
+	ADCA.INTFLAGS = ADC_CH0IF_bm;
 	s->a_v = ADCA.CH0.RES;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN6_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN6_gc; // ADC-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
-	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
+	while (!ADCA.CH0.INTFLAGS);
+	ADCA.INTFLAGS = ADC_CH0IF_bm;
 	s->b_v = ADCA.CH0.RES;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN7_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN7_gc; // VS-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
-	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
-	s->b_i = ADCA.CH0.RES;
+	while (!ADCA.CH0.INTFLAGS);
+	ADCA.INTFLAGS = ADC_CH0IF_bm;
+	s->b_i = ADCA.CH0.RES; // measure CS-B monitoring OPA-A
 }
 
 /** Event handler for the library USB Control Request reception event. */
