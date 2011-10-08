@@ -50,7 +50,7 @@ void initDAC(void){
 	PORTC.OUTCLR = 1 << 5; // SCK low
 }
 
-/* Call me at beginning to set pin conditions for binary state pins */
+/* Configure the pin modes for the switches and opamps. */
 void initChannels(void){
 	PORTD.DIRSET = 1 << 5 | 1 << 3 | 1 << 1 | 1 << 0; // SHDN-INS-A, SWMODE-A, SHDN-INS-B, EN-OPA-A as outputs
 	PORTC.DIRSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B as outputs
@@ -59,6 +59,7 @@ void initChannels(void){
 	PORTB.DIRSET = 1 << 3; // Iset output low
 }
 
+/* Configure the shutdown/enable pin states and set the SPTDT switch states. */
 void configChannelA(uint8_t state){
 	switch (state) {
 		case SVMI:
@@ -94,7 +95,7 @@ void configChannelB(uint8_t state){
 		}
 }
 
-/* Write a value to a specified channel of the ADC with specified flags. */
+/* Write a value to a specified channel of the DAC with specified flags. */
 void writeDAC(uint8_t flags, uint16_t value){
 	PORTC.OUTCLR = 1 << 4; // CS low
 	USARTC1.DATA = ((flags<<4) & 0xF0) | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
@@ -107,6 +108,7 @@ void writeDAC(uint8_t flags, uint16_t value){
 	PORTC.OUTSET = 1 << 3; // LDAC high
 }
 
+/* Take a channel, state, and value and configure the switches, shutdowns, and DACs. High level abstraction. */
 void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
 	uint8_t dacflags = 0;
 	if (channel) dacflags |= DACFLAG_CHANNEL;
@@ -129,6 +131,7 @@ void configHardware(void){
 	USB_Init();
 }
 
+/* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
 void initADC(void){
 	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | ADC_CONMODE_bm | ADC_IMPMODE_bm | ADC_CURRLIMIT_NO_gc;
 	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
@@ -138,6 +141,7 @@ void initADC(void){
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
 
+/* Read the voltage and current from the two channels, using while(!..) loops to wait for conversions. */
 void readADC(IN_sample* s){
 
 	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc; // VS-A
