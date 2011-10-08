@@ -145,7 +145,7 @@ void initADC(void){
 void readADC(IN_sample* s){
 
 	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc; // VS-A
-	ADCA.CTRLA |= ADC_CH0START_bm // start conversion
+	ADCA.CTRLA |= ADC_CH0START_bm; // start conversion
 	while (!ADCA.CH0.INTFLAGS); // wait for conversion to finish
 	ADCA.INTFLAGS = ADC_CH0IF_bm; // reset INTFLAGS
 	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
