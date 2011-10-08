@@ -144,7 +144,7 @@ void readADC(IN_sample* s){
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
 	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
-	s->b_i = ADCA.CH0.RES;
+	s->a_i = ADCA.CH0.RES;
 
 	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN2_gc;
 	ADCA.CTRLA |= ADC_CH0START_bm;
@@ -162,7 +162,7 @@ void readADC(IN_sample* s){
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS); //wait for conversion to finish
 	ADCA.INTFLAGS = ADC_CH0IF_bm; //reset INTFLAGS
-	s->a_i = ADCA.CH0.RES;
+	s->b_i = ADCA.CH0.RES;
 }
 
 /** Event handler for the library USB Control Request reception event. */

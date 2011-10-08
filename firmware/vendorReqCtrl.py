@@ -4,6 +4,9 @@ MODE_DISABLED=0
 MODE_SVMI=1
 MODE_SIMV=2
 
+def unpackSign(n):
+	return n - (1<<12) if n>2048 else n
+
 class CEE(object):
 	def __init__(self):
 		self.init()
@@ -21,7 +24,15 @@ class CEE(object):
 		
 	def readADC(self):
 		data = self.dev.ctrl_transfer(0x40|0x80, 0xA0, 0, 0, 6)
-		return dict(zip(['a_v', 'a_i', 'b_v', 'b_i'], self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])))
+		l = self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])
+		print l
+		vals = map(unpackSign, l)
+		return {
+			'a_v': vals[0]/2048.0*2.5,
+			'a_i': ((vals[1]/2048.0*2.5)-1.25)/45/.07,
+			'b_v': vals[2]/2048.0*2.5,
+			'b_i': ((vals[3]/2048.0*2.5)-1.25)/45/.07,
+		}
 
 	def set(self, chan, v=None, i=None):
 		cmd = 0xAA+chan
