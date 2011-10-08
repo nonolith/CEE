@@ -19,9 +19,9 @@ class CEE(object):
 		"Turn a 3-byte string containing 2 12-bit values into two ints"
 		return s[0]|((s[1]&0x0f)<<8), ((s[1]&0xf0) >> 4)|(s[2]<<4)
 		
-	def readADC(self,wValue=0, wIndex=0):
-		data = self.dev.ctrl_transfer(0x40|0x80, 0xA0, wValue, wIndex, 6)
-		return self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])
+	def readADC(self):
+		data = self.dev.ctrl_transfer(0x40|0x80, 0xA0, 0, 0, 6)
+		return dict(zip(['a_v', 'a_i', 'b_v', 'b_i'], self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])))
 
 	def set(self, chan, v=None, i=None):
 		cmd = 0xAA+chan
