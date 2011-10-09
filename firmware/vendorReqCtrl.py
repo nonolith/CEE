@@ -53,5 +53,8 @@ class CEE(object):
 	def setB(self, v=None, i=None):
 		self.set(1, v, i)
 
+	def bootload(self):
+		self.dev.ctrl_transfer(0x40|0x80, 0xBB, 0, 0, 1)
+
 if __name__ == "__main__":
 	cee = CEE()

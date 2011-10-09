@@ -185,6 +185,15 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				writeChannel(1, req->wIndex, req->wValue);
 				USB_ep0_send(0);
 				break;
+			case 0xBB:
+				USB_ep0_send(0);
+				USB_ep0_wait_for_complete();
+				_delay_us(10000);
+				USB_Detach();
+				_delay_us(100000);
+				void (*enter_bootloader)(void) = (void *) 0x47fc /*0x8ff8/2*/;
+				enter_bootloader();
+				break;
 		}
 		return true;
 	}
