@@ -499,6 +499,9 @@ gccversion :
 program: $(TARGET).hex $(TARGET).eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
 
+update: $(TARGET).hex
+	python update.py $(TARGET).hex
+
 flip: $(TARGET).hex
 	batchisp -hardware usb -device $(MCU) -operation erase f
 	batchisp -hardware usb -device $(MCU) -operation loadbuffer $(TARGET).hex program
