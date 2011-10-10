@@ -131,8 +131,6 @@ void configHardware(void){
 	USB_Init();
 }
 
-//#include "usb/iox32a4u.h"
-
 /* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
 void initADC(void){
 	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 1 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc;
@@ -143,8 +141,18 @@ void initADC(void){
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
 
+uint8_t readOffset(void){
+    ADCA.CH0.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN4_gc; // measure INTGND vs PIN4(GND)
+    ADCA.CTRLA |= ADC_CH0START_bm;
+    while (!ADCA.CH0.INTFLAGS);
+    ADCA.INTFLAGS = ADC_CH0IF_bm;
+	return (0xFF - ADCA.CH0.RESL); // return DC offset between internal and external ground
+}
+
 /* Read the voltage and current from the two channels, using while(!..) loops to wait for conversions. */
 void readADC(IN_sample* s){
+
+	uint8_t offset = readOffset();
 
 	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN1_gc; // 1.25VREF vs VS-A
 	ADCA.CTRLA |= ADC_CH0START_bm; // start conversion
@@ -152,24 +160,25 @@ void readADC(IN_sample* s){
 	ADCA.INTFLAGS = ADC_CH0IF_bm; // reset INTFLAGS
 	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc |  ADC_CH_MUXPOS_PIN2_gc; // GND vs ADC-A
+	ADCA.CH0.MUXCTRL = 0b100 |  ADC_CH_MUXPOS_PIN2_gc; // INTGND vs ADC-A
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
-	s->a_v = ADCA.CH0.RES;
+	s->a_v = ADCA.CH0.RES + offset;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc | ADC_CH_MUXPOS_PIN6_gc; // ADC-B
+	ADCA.CH0.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN6_gc; // INTGND vs ADC-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
-	s->b_v = ADCA.CH0.RES;
+	s->b_v = ADCA.CH0.RES + offset;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // VS-B
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // 1.25VREF vs VS-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
 	s->b_i = ADCA.CH0.RES; // measure CS-B monitoring OPA-A
 }
+
 
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
