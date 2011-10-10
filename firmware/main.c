@@ -131,12 +131,14 @@ void configHardware(void){
 	USB_Init();
 }
 
+//#include "usb/iox32a4u.h"
+
 /* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
 void initADC(void){
-	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | ADC_CONMODE_bm | ADC_IMPMODE_bm | ADC_CURRLIMIT_NO_gc;
+	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 1 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc;
 	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
-	ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc; // ADC CLK = 1MHz
-	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_SINGLEENDED_gc;
+	ADCA.PRESCALER = ADC_PRESCALER_DIV64_gc; // ADC CLK = 500KHz
+	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
 	ADCA.CH0.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc; // trigger interrupt on pin complete
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
@@ -144,25 +146,25 @@ void initADC(void){
 /* Read the voltage and current from the two channels, using while(!..) loops to wait for conversions. */
 void readADC(IN_sample* s){
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc; // VS-A
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN1_gc; // 1.25VREF vs VS-A
 	ADCA.CTRLA |= ADC_CH0START_bm; // start conversion
 	while (!ADCA.CH0.INTFLAGS); // wait for conversion to finish
 	ADCA.INTFLAGS = ADC_CH0IF_bm; // reset INTFLAGS
 	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN2_gc; // ADC-A
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc |  ADC_CH_MUXPOS_PIN2_gc; // GND vs ADC-A
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
 	s->a_v = ADCA.CH0.RES;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN6_gc; // ADC-B
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc | ADC_CH_MUXPOS_PIN6_gc; // ADC-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
 	s->b_v = ADCA.CH0.RES;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN7_gc; // VS-B
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // VS-B
 	ADCA.CTRLA |= ADC_CH0START_bm;
 	while (!ADCA.CH0.INTFLAGS);
 	ADCA.INTFLAGS = ADC_CH0IF_bm;
