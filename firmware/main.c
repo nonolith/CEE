@@ -133,11 +133,18 @@ void configHardware(void){
 
 /* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
 void initADC(void){
-	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 1 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc;
+	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 0 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc | ADC_FREERUN_bm;
 	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
-	ADCA.PRESCALER = ADC_PRESCALER_DIV64_gc; // ADC CLK = 500KHz
+	ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc; // ADC CLK = 1MHz
+	ADCA.EVCTRL = ADC_SWEEP_0123_gc ; 
 	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
-	ADCA.CH0.INTCTRL = ADC_CH_INTMODE_COMPLETE_gc; // trigger interrupt on pin complete
+	ADCA.CH1.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
+	ADCA.CH2.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
+	ADCA.CH3.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN1_gc; // 1.25VREF vs VS-A
+	ADCA.CH1.MUXCTRL = 0b100 |  ADC_CH_MUXPOS_PIN2_gc; // INTGND vs ADC-A
+	ADCA.CH2.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN6_gc; // INTGND vs ADC-B
+	ADCA.CH3.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // 1.25VREF vs VS-B
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
 
@@ -152,31 +159,15 @@ uint8_t readOffset(void){
 /* Read the voltage and current from the two channels, using while(!..) loops to wait for conversions. */
 void readADC(IN_sample* s){
 
-	uint8_t offset = readOffset();
+	uint8_t offset = 0x16;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN1_gc; // 1.25VREF vs VS-A
-	ADCA.CTRLA |= ADC_CH0START_bm; // start conversion
-	while (!ADCA.CH0.INTFLAGS); // wait for conversion to finish
-	ADCA.INTFLAGS = ADC_CH0IF_bm; // reset INTFLAGS
 	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
 
-	ADCA.CH0.MUXCTRL = 0b100 |  ADC_CH_MUXPOS_PIN2_gc; // INTGND vs ADC-A
-	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS);
-	ADCA.INTFLAGS = ADC_CH0IF_bm;
-	s->a_v = ADCA.CH0.RES + offset;
+	s->a_v = ADCA.CH1.RES + offset;
 
-	ADCA.CH0.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN6_gc; // INTGND vs ADC-B
-	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS);
-	ADCA.INTFLAGS = ADC_CH0IF_bm;
-	s->b_v = ADCA.CH0.RES + offset;
+	s->b_v = ADCA.CH2.RES + offset;
 
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // 1.25VREF vs VS-B
-	ADCA.CTRLA |= ADC_CH0START_bm;
-	while (!ADCA.CH0.INTFLAGS);
-	ADCA.INTFLAGS = ADC_CH0IF_bm;
-	s->b_i = ADCA.CH0.RES; // measure CS-B monitoring OPA-A
+	s->b_i = ADCA.CH3.RES; // measure CS-B monitoring OPA-A
 }
 
 
