@@ -133,7 +133,7 @@ void configHardware(void){
 
 /* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
 void initADC(void){
-	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 0 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc | ADC_FREERUN_bm;
+	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 1 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc | ADC_FREERUN_bm;
 	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
 	ADCA.PRESCALER = ADC_PRESCALER_DIV32_gc; // ADC CLK = 1MHz
 	ADCA.EVCTRL = ADC_SWEEP_0123_gc ; 
