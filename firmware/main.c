@@ -131,7 +131,7 @@ void configHardware(void){
 	USB_Init();
 }
 
-/* Configure the ADC to 12b, single-ended, signed mode with a 2.5VREF. */
+/* Configure the ADC to 12b, differential w/ gain, signed mode with a 2.5VREF. */
 void initADC(void){
 	ADCA.CTRLB = ADC_RESOLUTION_12BIT_gc | 1 << ADC_CONMODE_bp | 0 << ADC_IMPMODE_bp | ADC_CURRLIMIT_NO_gc | ADC_FREERUN_bm;
 	ADCA.REFCTRL = ADC_REFSEL_AREFA_gc; // use 2.5VREF at AREFA
@@ -148,15 +148,7 @@ void initADC(void){
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
 
-uint8_t readOffset(void){
-    ADCA.CH0.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN4_gc; // measure INTGND vs PIN4(GND)
-    ADCA.CTRLA |= ADC_CH0START_bm;
-    while (!ADCA.CH0.INTFLAGS);
-    ADCA.INTFLAGS = ADC_CH0IF_bm;
-	return (0xFF - ADCA.CH0.RESL); // return DC offset between internal and external ground
-}
-
-/* Read the voltage and current from the two channels, using while(!..) loops to wait for conversions. */
+/* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
 void readADC(IN_sample* s){
 
 	uint8_t offset = 0x16;
