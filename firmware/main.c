@@ -12,25 +12,31 @@ unsigned char in_seqno = 0;
 int main(void){
 	configHardware();
 	sei();	
-	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
+	TCC0.CTRLA = TC_CLKSEL_DIV32_gc; // 1Mhz
 	packetbuf_endpoint_init();	
 	
 	while (1){
-		do{ 
+		do{
 			USB_Task();
 			packetbuf_endpoint_poll();
-		} while (TCC0.CNT < 500/*100*4*/);
+		} 
+
+		while (TCC0.CNT < 500);
 		TCC0.CNT=0;
 		
 		if (packetbuf_out_can_read()){
 			packetbuf_out_done_read();
 		}
 		
-		if (packetbuf_in_can_write()){
-			uint8_t* buf = packetbuf_in_write_position();
-			buf[0] = in_seqno;
-			buf[1] = in_count;
-			buf[2] = out_count;
+		if (packetbuf_in_can_write()){ // if there's space in the buffer
+			uint8_t* buf = packetbuf_in_write_position(); // find out where to stick the data
+			IN_packet* packet = (IN_packet *) &buf; // cast the space as a packet, using an explicit cast as types are different
+			for (uint8_t i = 0; i < 10; i++){ // iterate through the ten spots in the packet
+				IN_sample* data = &(packet->data[i]);
+				readADC(data); //pass the function 'readADC' a pointer to the current data element
+				while (TCC0.CNT < 10); // wait awhile for proper packet timing 
+				TCC0.CNT = 0; //reset timer
+			}
 			packetbuf_in_done_write();
 		}
 		in_seqno++;
