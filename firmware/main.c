@@ -13,33 +13,43 @@ int main(void){
 	configHardware();
 	sei();	
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
-	packetbuf_endpoint_init();	
+	packetbuf_endpoint_init();
+
+	IN_packet* packet = 0; // device->host packet currently being filled
+	uint8_t sampleIndex = 0; // sample index within the packet
 	
 	while (1){
 		do{
-			USB_Task();
+			USB_Task(); // Lower-priority USB polling, like control requests
 			packetbuf_endpoint_poll();
-		} 
-
-		while (TCC0.CNT < 500);
+		} while (TCC0.CNT < 40); // Wait until it's time for the next packet
 		TCC0.CNT=0;
-		
-		if (packetbuf_out_can_read()){
-			packetbuf_out_done_read();
-		}
-		
-		if (packetbuf_in_can_write()){ // if there's space in the buffer
-			uint8_t* buf = packetbuf_in_write_position(); // find out where to stick the data
-			IN_packet* packet = (IN_packet *) &buf; // cast the space as a packet, using an explicit cast as types are different
-			for (uint8_t i = 0; i < 10; i++){ // iterate through the ten spots in the packet
-				IN_sample* data = &(packet->data[i]);
-				readADC(data); //pass the function 'readADC' a pointer to the current data element
-				while (TCC0.CNT < 40); // wait awhile for proper packet timing 
-				TCC0.CNT = 0; //reset timer
+
+		if (!packet && packetbuf_in_can_write()){
+			// If we don't have a packet, or the packet is full, get a position to write a new packet
+			packet = (IN_packet *) packetbuf_in_write_position();
+			sampleIndex = 0;
+
+			// Write packet header (stream debugging data)
+			packet->seqno = in_seqno++;
+			packet->reserved[0] = in_count;
+			packet->reserved[1] = out_count;
+
+			// Pretend to consume the data coming from the host at the same speed
+			if (packetbuf_out_can_read()){
+				packetbuf_out_done_read();
 			}
-			packetbuf_in_done_write();
 		}
-		in_seqno++;
+		
+		if (packet){
+			readADC(&(packet->data[sampleIndex])); // Write ADC data into the pointer to the IN_sample
+			sampleIndex++;
+
+			if (sampleIndex > 10){ // Packet full
+				packet = 0; // Clear the packet pointer so we get a new one next time.
+				packetbuf_in_done_write(); // Buffer the packet for sending
+			}
+		}
 	}
 }
 
