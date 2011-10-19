@@ -12,7 +12,7 @@ unsigned char in_seqno = 0;
 int main(void){
 	configHardware();
 	sei();	
-	TCC0.CTRLA = TC_CLKSEL_DIV32_gc; // 1Mhz
+	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
 	packetbuf_endpoint_init();	
 	
 	while (1){
@@ -34,7 +34,7 @@ int main(void){
 			for (uint8_t i = 0; i < 10; i++){ // iterate through the ten spots in the packet
 				IN_sample* data = &(packet->data[i]);
 				readADC(data); //pass the function 'readADC' a pointer to the current data element
-				while (TCC0.CNT < 10); // wait awhile for proper packet timing 
+				while (TCC0.CNT < 40); // wait awhile for proper packet timing 
 				TCC0.CNT = 0; //reset timer
 			}
 			packetbuf_in_done_write();
