@@ -15,7 +15,7 @@ int main(void){
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
 	packetbuf_endpoint_init();
 
-	IN_packet* packet = 0; // device->host packet currently being filled
+	IN_packet* inPacket = 0; // device->host packet currently being filled
 	uint8_t sampleIndex = 0; // sample index within the packet
 	
 	while (1){
@@ -25,15 +25,15 @@ int main(void){
 		} while (TCC0.CNT < 40); // Wait until it's time for the next packet
 		TCC0.CNT=0;
 
-		if (!packet && packetbuf_in_can_write()){
+		if (!inPacket && packetbuf_in_can_write()){
 			// If we don't have a packet, or the packet is full, get a position to write a new packet
-			packet = (IN_packet *) packetbuf_in_write_position();
+			inPacket = (IN_packet *) packetbuf_in_write_position();
 			sampleIndex = 0;
 
 			// Write packet header (stream debugging data)
-			packet->seqno = in_seqno++;
-			packet->reserved[0] = in_count;
-			packet->reserved[1] = out_count;
+			inPacket->seqno = in_seqno++;
+			inPacket->reserved[0] = in_count;
+			inPacket->reserved[1] = out_count;
 
 			// Pretend to consume the data coming from the host at the same speed
 			if (packetbuf_out_can_read()){
@@ -41,12 +41,12 @@ int main(void){
 			}
 		}
 		
-		if (packet){
-			readADC(&(packet->data[sampleIndex])); // Write ADC data into the pointer to the IN_sample
+		if (inPacket){
+			readADC(&(inPacket->data[sampleIndex])); // Write ADC data into the pointer to the IN_sample
 			sampleIndex++;
 
 			if (sampleIndex > 10){ // Packet full
-				packet = 0; // Clear the packet pointer so we get a new one next time.
+				inPacket = 0; // Clear the packet pointer so we get a new one next time.
 				packetbuf_in_done_write(); // Buffer the packet for sending
 			}
 		}
