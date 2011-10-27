@@ -16,7 +16,7 @@ int main(void){
 	packetbuf_endpoint_init();
 
 	IN_packet* inPacket = 0; // device->host packet currently being filled
-	uint8_t sampleIndex = 0; // sample index within the packet
+	uint8_t inSampleIndex = 0; // sample index within the packet
 	
 	while (1){
 		do{
@@ -28,7 +28,7 @@ int main(void){
 		if (!inPacket && packetbuf_in_can_write()){
 			// If we don't have a packet, or the packet is full, get a position to write a new packet
 			inPacket = (IN_packet *) packetbuf_in_write_position();
-			sampleIndex = 0;
+			inSampleIndex = 0;
 
 			// Write packet header (stream debugging data)
 			inPacket->seqno = in_seqno++;
@@ -42,10 +42,10 @@ int main(void){
 		}
 		
 		if (inPacket){
-			readADC(&(inPacket->data[sampleIndex])); // Write ADC data into the pointer to the IN_sample
-			sampleIndex++;
+			readADC(&(inPacket->data[inSampleIndex])); // Write ADC data into the pointer to the IN_sample
+			inSampleIndex++;
 
-			if (sampleIndex > 10){ // Packet full
+			if (inSampleIndex > 10){ // Packet full
 				inPacket = 0; // Clear the packet pointer so we get a new one next time.
 				packetbuf_in_done_write(); // Buffer the packet for sending
 			}
