@@ -14,44 +14,108 @@ int main(void){
 	configHardware();
 	sei();	
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
+	TCC0.CTRLB |= TC_WGMODE_NORMAL_gc | TC0_CCAEN_bp;
+	TCC0.CCA = 40;
 	packetbuf_endpoint_init();
+	for (;;){
+		USB_Task(); // Lower-priority USB polling, like control requests
+		packetbuf_endpoint_poll();
+	}
+}
 
-	IN_packet* inPacket = 0; // device->host packet currently being filled
-	uint8_t inSampleIndex = 0; // sample index for ADC readings
-	uint8_t outSampleIndex = 0;	// sample index for DAC values
-	while (1){
-		do{
-			USB_Task(); // Lower-priority USB polling, like control requests
-			packetbuf_endpoint_poll();
-		} while (TCC0.CNT < 40); // Wait until it's time for the next packet
-		TCC0.CNT=0;
+union{
+	uint8_t bytes[4];
+	struct {
+		uint8_t flags:4;
+		uint16_t val:12;
+	} __attribute__(packed) commands[2];
+} DACdata;
 
-		if (!inPacket && packetbuf_in_can_write()){
-			// If we don't have a packet, or the packet is full, get a position to write a new packet
-			inPacket = (IN_packet *) packetbuf_in_write_position();
-			inSampleIndex = 0;
 
-			// Write packet header (stream debugging data)
-			inPacket->seqno = in_seqno++;
-			inPacket->reserved[0] = in_count;
-			inPacket->reserved[1] = out_count;
+// Position into DACdata.bytes that is next to write
+volatile uint8_t dacWriteIndex = 0;
 
-			// Pretend to consume the data coming from the host at the same speed
-			if (packetbuf_out_can_read()){
-				packetbuf_out_done_read();
-			}
-		}
-		
-		if (inPacket){
-			readADC(&(inPacket->data[inSampleIndex])); // Write ADC data into the pointer to the IN_sample
-			inSampleIndex++;
+// Sample index within packet to be written next
+volatile uint8_t sampleIndex = 0;
 
-			if (inSampleIndex > 10){ // Packet full
-				inPacket = 0; // Clear the packet pointer so we get a new one next time.
-				packetbuf_in_done_write(); // Buffer the packet for sending
-			}
+volatile IN_packet* inPacket=0;
+volatile OUT_packet *outPacket=0;
+
+inline void dac_ldac(){
+	PORTC.OUTSET = LDAC;
+	PORTC.OUTCLR = LDAC;
+}
+
+inline void dac_unselect(){
+	PORTC.OUTSET = CS;
+}
+
+inline void dac_select(){
+	PORTC.OUTCLR = CS;
+}
+
+void dac_write(uint8_t flags_a, uint8_t flags_b, OUT_sample* s){
+	DACdata.commands[0]->flags = flags_a & ~DACFLAG_channel;
+	DACdata.commands[0]->val = s->a;
+	DACdata.commands[1]->flags = flags_b | DACFLAG_channel;
+	DACdata.commands[1]->val = s->b;
+	dac_select();
+	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
+	USARTC1.DATA = DACdata.bytes[byteCount];
+}
+
+ISR(TCC0_CCA_vect){
+	// TODO: check to see how much synchronization packetbuf_* functions need with other side of the queue in main thread. iirc, should be mostly fine except for in error conditions
+
+	if (!inPacket && packetbuf_in_can_write()){
+		inPacket = (IN_packet *) packetbuf_in_write_position();
+
+		// Write packet header (stream debugging data)
+		inPacket->seqno = in_seqno++;
+		inPacket->reserved[0] = in_count;
+		inPacket->reserved[1] = out_count;
+	}
+	if (!outPacket && packetbuf_out_can_write()){
+		outPacket = packetbuf_out_read_position();
+	}
+
+	if (inPacket && outPacket){
+		readADC(&(inPacket->data[sampleIndex]));
+		dac_ldac();
+		// Set mode from previous packet (before/after LDAC?)
+		// Need to figure out flag format - we also need to include mode
+		dac_write(outPacket->flags, outPacket->flags >> 4, &(outPacket->data[sampleIndex]));		
+		sampleIndex++;
+
+		if (sampleIndex > SAMPLES_PER_PACKET){
+			sampleIndex = 0;
+			inPacket = outPacket = 0;
+			packetbuf_in_done_write();
+			packetbuf_out_done_read();
 		}
 	}
+}
+
+
+
+ISR(USARTC1_DRE_vect){
+	if (byteCount == 1 | byteCount == 3){
+		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc;
+		USARTC1.CTRLA = USART_DREINTLVL_OFF_gc;
+	}
+	else{
+		USART.DATA =  DACdata.bytes[byteCount++];
+	}
+}
+
+ISR(USARTC1_TXC_vect){
+	PORTC.DIRSET = CS;
+	if (byteCount < 3){
+		PORTC.DIRCLR = CS;
+		USART.DATA =  DACdata.bytes[byteCount++];
+		USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
+	}
+	USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
 }
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
