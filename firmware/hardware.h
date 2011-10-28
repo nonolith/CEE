@@ -1,7 +1,13 @@
-// hardware-specific pinmappings                                                                                                                           
+// hardware-specific definitions                                                                                                                         
 // (C) 2011 Ian Daniher (Nonolith Labs) <ian@nonolithlabs.com>
 // Licensed under the terms of the GNU GPLv3+
 
+
+// MCP4922 flags
+#define DACFLAG_CHANNEL (1<<3)
+#define DACFLAG_BUF     (1<<2)
+#define DACFLAG_NO_MULT_REF (1<<1)
+#define DACFLAG_ENABLE  (1<<0)    
 
 // DAC-specific pinmappings
 #define DAC_SHDN  (1 << 2)
