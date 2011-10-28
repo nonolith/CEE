@@ -6,6 +6,7 @@
 
 #include "cee.h"
 #include "packetbuffer.h"
+#include "hardware.h"
 
 unsigned char in_seqno = 0;
 
@@ -55,40 +56,40 @@ int main(void){
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
 void initDAC(void){
-	PORTD.DIRSET = 1 << 2; // DAC-SHDN as outputs
-	PORTD.OUTSET = 1 << 2; // DAC-SHDN high
-	PORTC.DIRSET = 1 << 3 | 1 << 4 | 1 << 5 | 1 << 7; //LDAC, CS, SCK, TXD1 as outputs
+	PORTD.DIRSET = DAC_SHDN;
+	PORTD.OUTSET = DAC_SHDN; 
+	PORTC.DIRSET = LDAC | CS | SCK | TXD1;
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
 	USARTC1.BAUDCTRLA = 15;  // 1MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
 	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
-	PORTC.OUTSET = 1 << 4; // CS high
-	PORTC.OUTCLR = 1 << 3 | 1 << 5; // LDAC, SCK low
+	PORTC.OUTSET = CS;
+	PORTC.OUTCLR = LDAC | CS; // LDAC, SCK low
 }
 
 /* Configure the pin modes for the switches and opamps. */
 void initChannels(void){
-	PORTD.DIRSET = 1 << 5 | 1 << 3 | 1 << 1 | 1 << 0; // SHDN-INS-A, SWMODE-A, SHDN-INS-B, EN-OPA-A as outputs
-	PORTC.DIRSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B as outputs
-	PORTD.DIRCLR = 1 << 4; // TFLAG-A as input
-	PORTC.DIRCLR = 1 << 1; // TFLAG-B as input
-	PORTB.DIRSET = 1 << 3; // Iset output low
+	PORTD.DIRSET = SHDN_INS_A | SWMODE_A | SHDN_INS_B | EN_OPA_A;
+	PORTC.DIRSET = SWMODE_B | EN_OPA_B;
+	PORTD.DIRCLR = TFLAG_A;
+	PORTC.DIRCLR = TFLAG_B;
+	PORTB.DIRSET = ISET;
 }
 
 /* Configure the shutdown/enable pin states and set the SPTDT switch states. */
 void configChannelA(uint8_t state){
 	switch (state) {
 		case SVMI:
-			PORTD.OUTSET = 1 << 3 | 1 << 0; // SWMODE-A, EN-OPA-A high
-			PORTD.OUTCLR = 1 << 5; // SHDN-INS-A low
+			PORTD.OUTSET = SWMODE_A | EN_OPA_A;
+			PORTD.OUTCLR = SHDN_INS_A;
 			break;
 		case SIMV:
-			PORTD.OUTSET = 1 << 0; // EN-OPA-A high
-			PORTD.OUTCLR = 1 << 5 | 1 << 3; // SWMODE-A, SHND-INS-A low
+			PORTD.OUTSET = EN_OPA_A;
+			PORTD.OUTCLR = SWMODE_A | SHDN_INS_A;
 			break;
 		case DISABLED:
-			PORTD.OUTSET = 1 << 3; // SHDN-INS-A high
-			PORTD.OUTCLR = 1 << 5 | 1 << 3; // SWMODE-A, EN-OPA-A low
+			PORTD.OUTSET = SHDN_INS_A;
+			PORTD.OUTCLR = SWMODE_A | EN_OPA_A;
 			break;
 	}
 }
@@ -96,30 +97,30 @@ void configChannelA(uint8_t state){
 void configChannelB(uint8_t state){
 	switch (state) {
 		case SVMI:
-			PORTC.OUTSET = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B high
-			PORTD.OUTCLR = 1 << 1; // SHDN-INS-B low
+			PORTC.OUTSET = SWMODE_B | EN_OPA_B;
+			PORTD.OUTCLR = SHDN_INS_B;
 			break;
 		case SIMV:
-			PORTC.OUTSET = 1 << 0; // EN-OPA-B high
-			PORTC.OUTCLR = 1 << 2; // SWMODE-B low
-			PORTD.OUTCLR = 1 << 1; // SHDN-INS-B low
+			PORTC.OUTSET = EN_OPA_B;
+			PORTC.OUTCLR = SWMODE_B;
+			PORTD.OUTCLR = SHDN_INS_B;
 			break;
 		case DISABLED:
-			PORTC.OUTCLR = 1 << 2 | 1 << 0; // SWMODE-B, EN-OPA-B low
-			PORTD.OUTSET = 1 << 1; // SHDN-INS-B high
+			PORTC.OUTCLR = SWMODE_B | EN_OPA_B;
+			PORTD.OUTSET = SHDN_INS_B;
 			break;
 		}
 }
 
 /* Write a value to a specified channel of the DAC with specified flags. */
 void writeDAC(uint8_t flags, uint16_t value){
-	PORTC.OUTCLR = 1 << 4; // CS low
+	PORTC.OUTCLR = CS;
 	USARTC1.DATA = ((flags<<4) & 0xF0) | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
 	while(!(USARTC1.STATUS & USART_DREIF_bm)); // wait until we can write another byte
 	USARTC1.STATUS = USART_TXCIF_bm; // clear TX complete flag
 	USARTC1.DATA = value & 0xFF;
 	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
-	PORTC.OUTSET = 1 << 4; // CS high
+	PORTC.OUTSET = CS;
 }
 
 /* Take a channel, state, and value and configure the switches, shutdowns, and DACs. High level abstraction. */
@@ -137,7 +138,6 @@ void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
-	PORTE.DIRSET = 1 << 0 | 1 << 1; // debug LEDs
 	initDAC();
 	initADC();
 	initChannels();
