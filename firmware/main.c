@@ -16,8 +16,8 @@ int main(void){
 	packetbuf_endpoint_init();
 
 	IN_packet* inPacket = 0; // device->host packet currently being filled
-	uint8_t inSampleIndex = 0; // sample index within the packet
-	
+	uint8_t inSampleIndex = 0; // sample index for ADC readings
+	uint8_t outSampleIndex = 0;	// sample index for DAC values
 	while (1){
 		do{
 			USB_Task(); // Lower-priority USB polling, like control requests
@@ -62,8 +62,8 @@ void initDAC(void){
 	USARTC1.BAUDCTRLA = 15;  // 1MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
 	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
-	PORTC.OUTSET = 1 << 3 | 1 << 4; // LDAC, CS high
-	PORTC.OUTCLR = 1 << 5; // SCK low
+	PORTC.OUTSET = 1 << 4; // CS high
+	PORTC.OUTCLR = 1 << 3 | 1 << 5; // LDAC, SCK low
 }
 
 /* Configure the pin modes for the switches and opamps. */
@@ -120,8 +120,6 @@ void writeDAC(uint8_t flags, uint16_t value){
 	USARTC1.DATA = value & 0xFF;
 	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
 	PORTC.OUTSET = 1 << 4; // CS high
-	PORTC.OUTCLR = 1 << 3; // LDAC low
-	PORTC.OUTSET = 1 << 3; // LDAC high
 }
 
 /* Take a channel, state, and value and configure the switches, shutdowns, and DACs. High level abstraction. */
