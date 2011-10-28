@@ -4,7 +4,7 @@
 #include <avr/wdt.h>
 #include <avr/power.h>
 #include <avr/interrupt.h>
-#include <delay.h>
+#include <util/delay.h>
 
 #include "Descriptors.h"
 
@@ -22,11 +22,12 @@ void configHardware(void);
 void initDAC(void);
 void writeDAC(uint8_t flags, uint16_t value);
 void initADC(void);
-void readADC(IN_sample);
 void configChannels(void);
 void writeChannelA(uint8_t state);
 void writeChannelB(uint8_t state);
-
+inline void dac_ldac(void);
+inline void dac_unselect(void);
+inline void dac_select(void);
 
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req);
 
@@ -54,6 +55,8 @@ typedef struct OUT_packet{
 	unsigned char flags;
 	OUT_sample data[10];
 } __attribute__((packed)) OUT_packet;
+
+void readADC(IN_sample* s);
 
 // MCP4922 flags
 #define DACFLAG_CHANNEL	(1<<3)

@@ -41,6 +41,8 @@ volatile uint8_t sampleIndex = 0;
 volatile IN_packet* inPacket=0;
 volatile OUT_packet *outPacket=0;
 
+volatile uint8_t byteCount = 0;
+
 inline void dac_ldac(){
 	PORTC.OUTSET = LDAC;
 	PORTC.OUTCLR = LDAC;
@@ -55,9 +57,9 @@ inline void dac_select(){
 }
 
 void dac_write(uint8_t flags_a, uint8_t flags_b, OUT_sample* s){
-	DACdata.commands[0]->flags = flags_a & ~DACFLAG_channel;
+	DACdata.commands[0]->flags = flags_a & ~DACFLAG_CHANNEL;
 	DACdata.commands[0]->val = s->a;
-	DACdata.commands[1]->flags = flags_b | DACFLAG_channel;
+	DACdata.commands[1]->flags = flags_b | DACFLAG_CHANNEL;
 	DACdata.commands[1]->val = s->b;
 	dac_select();
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
@@ -87,7 +89,7 @@ ISR(TCC0_CCA_vect){
 		dac_write(outPacket->flags, outPacket->flags >> 4, &(outPacket->data[sampleIndex]));		
 		sampleIndex++;
 
-		if (sampleIndex > SAMPLES_PER_PACKET){
+		if (sampleIndex > 10){
 			sampleIndex = 0;
 			inPacket = outPacket = 0;
 			packetbuf_in_done_write();
@@ -99,12 +101,12 @@ ISR(TCC0_CCA_vect){
 
 
 ISR(USARTC1_DRE_vect){
-	if (byteCount == 1 | byteCount == 3){
+	if ((byteCount == 1) | (byteCount == 3)){
 		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc;
 		USARTC1.CTRLA = USART_DREINTLVL_OFF_gc;
 	}
 	else{
-		USART.DATA =  DACdata.bytes[byteCount++];
+		USARTC1.DATA =  DACdata.bytes[byteCount++];
 	}
 }
 
@@ -112,7 +114,7 @@ ISR(USARTC1_TXC_vect){
 	PORTC.DIRSET = CS;
 	if (byteCount < 3){
 		PORTC.DIRCLR = CS;
-		USART.DATA =  DACdata.bytes[byteCount++];
+		USARTC1.DATA =  DACdata.bytes[byteCount++];
 		USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 	}
 	USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
