@@ -9,6 +9,11 @@
 #include "hardware.h"
 
 unsigned char in_seqno = 0;
+volatile uint8_t dacWriteIndex = 0; // Position into DACdata.bytes that is next to write
+volatile uint8_t sampleIndex = 0; // Sample index within packet to be written next
+volatile IN_packet* inPacket=0;
+volatile OUT_packet *outPacket=0;
+volatile uint8_t byteCount = 0;
 
 int main(void){
 	configHardware();
@@ -31,37 +36,12 @@ union{
 	} __attribute__(packed) commands[2];
 } DACdata;
 
-
-// Position into DACdata.bytes that is next to write
-volatile uint8_t dacWriteIndex = 0;
-
-// Sample index within packet to be written next
-volatile uint8_t sampleIndex = 0;
-
-volatile IN_packet* inPacket=0;
-volatile OUT_packet *outPacket=0;
-
-volatile uint8_t byteCount = 0;
-
-inline void dac_ldac(){
-	PORTC.OUTSET = LDAC;
-	PORTC.OUTCLR = LDAC;
-}
-
-inline void dac_unselect(){
-	PORTC.OUTSET = CS;
-}
-
-inline void dac_select(){
-	PORTC.OUTCLR = CS;
-}
-
 void dac_write(uint8_t flags_a, uint8_t flags_b, OUT_sample* s){
 	DACdata.commands[0]->flags = flags_a & ~DACFLAG_CHANNEL;
 	DACdata.commands[0]->val = s->a;
 	DACdata.commands[1]->flags = flags_b | DACFLAG_CHANNEL;
 	DACdata.commands[1]->val = s->b;
-	dac_select();
+	PORTC.OUTCLR = CS;
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 	USARTC1.DATA = DACdata.bytes[byteCount];
 }
@@ -83,7 +63,8 @@ ISR(TCC0_CCA_vect){
 
 	if (inPacket && outPacket){
 		readADC(&(inPacket->data[sampleIndex]));
-		dac_ldac();
+		PORTC.OUTSET = LDAC;
+		PORTC.OUTCLR = LDAC;
 		// Set mode from previous packet (before/after LDAC?)
 		// Need to figure out flag format - we also need to include mode
 		dac_write(outPacket->flags, outPacket->flags >> 4, &(outPacket->data[sampleIndex]));		
