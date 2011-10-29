@@ -10,21 +10,29 @@
 
 unsigned char in_seqno = 0;
 volatile uint8_t dacWriteIndex = 0; // Position into DACdata.bytes that is next to write
-volatile uint8_t sampleIndex = 0; // Sample index within packet to be written next
+
+uint8_t sampleIndex = 0; // Sample index within packet to be written next
 IN_packet *inPacket=0;
 OUT_packet *outPacket=0;
 volatile uint8_t byteCount = 0;
 
 int main(void){
 	configHardware();
-	sei();	
-	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
-	TCC0.CTRLB |= TC_WGMODE_NORMAL_gc | TC0_CCAEN_bp;
-	TCC0.CCA = 40;
 	packetbuf_endpoint_init();
+	
+	PMIC.CTRL = PMIC_LOLVLEN_bm;
+	sei();	
+	
+	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
+	TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
+	TCC0.PER = 40;
+	TCC0.CNT = 0;
+	
 	for (;;){
 		USB_Task(); // Lower-priority USB polling, like control requests
+		cli();
 		packetbuf_endpoint_poll();
+		sei();
 	}
 }
 
@@ -36,19 +44,23 @@ volatile union{
 	} __attribute__((packed)) commands[2];
 } DACdata;
 
-void dac_write(uint8_t flags_a, uint8_t flags_b, OUT_sample* s){
-	DACdata.commands[0].flags = flags_a & ~DACFLAG_CHANNEL;
+#define MODE_TO_DACFLAGS(m)  (((m)!=DISABLED)?DACFLAG_ENABLE:0) \
+                            |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0)
+	
+void dac_config(OUT_flags flags){
+	DACdata.commands[0].flags = MODE_TO_DACFLAGS(flags.a_mode);
+	DACdata.commands[1].flags = DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode);
+}
+
+void dac_write(OUT_sample* s){
 	DACdata.commands[0].val = s->a;
-	DACdata.commands[1].flags = flags_b | DACFLAG_CHANNEL;
 	DACdata.commands[1].val = s->b;
 	PORTC.OUTCLR = CS;
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 	USARTC1.DATA = DACdata.bytes[byteCount];
 }
 
-ISR(TCC0_CCA_vect){
-	// TODO: check to see how much synchronization packetbuf_* functions need with other side of the queue in main thread. iirc, should be mostly fine except for in error conditions
-
+ISR(TCC0_OVF_vect){
 	if (!inPacket && packetbuf_in_can_write()){
 		inPacket = (IN_packet *) packetbuf_in_write_position();
 
@@ -57,17 +69,26 @@ ISR(TCC0_CCA_vect){
 		inPacket->reserved[0] = in_count;
 		inPacket->reserved[1] = out_count;
 	}
-	if (!outPacket && packetbuf_out_can_write()){
+	if (!outPacket && packetbuf_out_can_read()){
 		outPacket = (OUT_packet *) packetbuf_out_read_position();
+		dac_config(outPacket->flags);
 	}
 
 	if (inPacket && outPacket){
+		PORTE.DIRSET = 1 | 2;
+		PORTE.OUTTGL = 1;
 		readADC(&(inPacket->data[sampleIndex]));
 		PORTC.OUTSET = LDAC;
 		PORTC.OUTCLR = LDAC;
-		// Set mode from previous packet (before/after LDAC?)
-		// Need to figure out flag format - we also need to include mode
-		dac_write(outPacket->flags, outPacket->flags >> 4, &(outPacket->data[sampleIndex]));		
+		
+		if (sampleIndex == 1){
+			// Just latched the 0th sample from this packet to the DAC
+			// Apply the mode for this packet
+			configChannelA(outPacket->flags.a_mode);
+			configChannelB(outPacket->flags.b_mode);
+		}
+		
+		dac_write(&(outPacket->data[sampleIndex]));		
 		sampleIndex++;
 
 		if (sampleIndex > 10){
@@ -79,8 +100,6 @@ ISR(TCC0_CCA_vect){
 		}
 	}
 }
-
-
 
 ISR(USARTC1_DRE_vect){
 	if ((byteCount == 1) | (byteCount == 3)){
@@ -124,8 +143,8 @@ void initChannels(void){
 	PORTB.DIRSET = ISET;
 }
 
-/* Configure the shutdown/enable pin states and set the SPTDT switch states. */
-void configChannelA(uint8_t state){
+/* Configure the shutdown/enable pin states and set the SPDT switch states. */
+void configChannelA(chan_mode state){
 	switch (state) {
 		case SVMI:
 			PORTD.OUTSET = SWMODE_A | EN_OPA_A;
@@ -142,7 +161,7 @@ void configChannelA(uint8_t state){
 	}
 }
 
-void configChannelB(uint8_t state){
+void configChannelB(chan_mode state){
 	switch (state) {
 		case SVMI:
 			PORTC.OUTSET = SWMODE_B | EN_OPA_B;
@@ -242,6 +261,7 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				USB_ep0_send(0);
 				break;
 			case 0xBB:
+				cli();
 				USB_ep0_send(0);
 				USB_ep0_wait_for_complete();
 				_delay_us(10000);

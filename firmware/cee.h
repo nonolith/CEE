@@ -11,11 +11,18 @@
 #include "usb.h"
 
 // generic defines
-#define DISABLED 0
-#define SVMI 1                                                                                                                                                           
-#define SIMV 2
+
+typedef enum chan_mode{
+	DISABLED = 0,
+	SVMI = 1,
+	SIMV = 2,
+} chan_mode;
+
 #define A 0
 #define B 1
+
+void configChannelA(chan_mode state);
+void configChannelB(chan_mode state);
 
 // type definitions
 typedef struct IN_sample{
@@ -37,9 +44,17 @@ typedef struct OUT_sample{
 	unsigned b:12;
 } __attribute__((packed)) OUT_sample;
 
+
+typedef struct OUT_flags{
+	chan_mode a_mode:2;
+	unsigned  a_reserved:2;
+	chan_mode b_mode:2;
+	unsigned  b_reserved:2;
+} __attribute__((packed)) OUT_flags;
+
 typedef struct OUT_packet{
 	unsigned char seqno;
-	unsigned char flags;
+	OUT_flags flags;
 	OUT_sample data[10];
 } __attribute__((packed)) OUT_packet;
 

@@ -1,4 +1,4 @@
-// hardware-specific definitions                                                                                                                         
+// hardware-specific definitions
 // (C) 2011 Ian Daniher (Nonolith Labs) <ian@nonolithlabs.com>
 // Licensed under the terms of the GNU GPLv3+
 
