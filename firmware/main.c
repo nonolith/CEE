@@ -11,8 +11,8 @@
 unsigned char in_seqno = 0;
 volatile uint8_t dacWriteIndex = 0; // Position into DACdata.bytes that is next to write
 volatile uint8_t sampleIndex = 0; // Sample index within packet to be written next
-volatile IN_packet* inPacket=0;
-volatile OUT_packet *outPacket=0;
+IN_packet *inPacket=0;
+OUT_packet *outPacket=0;
 volatile uint8_t byteCount = 0;
 
 int main(void){
@@ -28,19 +28,19 @@ int main(void){
 	}
 }
 
-union{
+volatile union{
 	uint8_t bytes[4];
 	struct {
 		uint8_t flags:4;
 		uint16_t val:12;
-	} __attribute__(packed) commands[2];
+	} __attribute__((packed)) commands[2];
 } DACdata;
 
 void dac_write(uint8_t flags_a, uint8_t flags_b, OUT_sample* s){
-	DACdata.commands[0]->flags = flags_a & ~DACFLAG_CHANNEL;
-	DACdata.commands[0]->val = s->a;
-	DACdata.commands[1]->flags = flags_b | DACFLAG_CHANNEL;
-	DACdata.commands[1]->val = s->b;
+	DACdata.commands[0].flags = flags_a & ~DACFLAG_CHANNEL;
+	DACdata.commands[0].val = s->a;
+	DACdata.commands[1].flags = flags_b | DACFLAG_CHANNEL;
+	DACdata.commands[1].val = s->b;
 	PORTC.OUTCLR = CS;
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 	USARTC1.DATA = DACdata.bytes[byteCount];
@@ -58,7 +58,7 @@ ISR(TCC0_CCA_vect){
 		inPacket->reserved[1] = out_count;
 	}
 	if (!outPacket && packetbuf_out_can_write()){
-		outPacket = packetbuf_out_read_position();
+		outPacket = (OUT_packet *) packetbuf_out_read_position();
 	}
 
 	if (inPacket && outPacket){
@@ -72,7 +72,8 @@ ISR(TCC0_CCA_vect){
 
 		if (sampleIndex > 10){
 			sampleIndex = 0;
-			inPacket = outPacket = 0;
+			inPacket = 0;
+			outPacket = 0;
 			packetbuf_in_done_write();
 			packetbuf_out_done_read();
 		}
