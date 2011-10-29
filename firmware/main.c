@@ -25,7 +25,7 @@ int main(void){
 	
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
 	TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
-	TCC0.PER = 400;
+	TCC0.PER = 160;
 	TCC0.CNT = 0;
 	
 	PORTE.DIRSET = (1<<2) | (1<<3);
@@ -33,9 +33,7 @@ int main(void){
 	
 	for (;;){
 		USB_Task(); // Lower-priority USB polling, like control requests
-		cli();
 		packetbuf_endpoint_poll();
-		sei();
 	}
 }
 
@@ -56,10 +54,12 @@ void dac_write(OUT_sample* s){
 	dac_data[3] = s->b & 0xff;
 	dac_index = 0;
 	PORTC.OUTCLR = CS;
+	USARTC1.DATA =  dac_data[dac_index++];
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 }
 
 ISR(TCC0_OVF_vect){
+	PORTE.OUTSET = (1<<3);
 	if (!inPacket && packetbuf_in_can_write()){
 		inPacket = (IN_packet *) packetbuf_in_write_position();
 
@@ -96,12 +96,11 @@ ISR(TCC0_OVF_vect){
 			packetbuf_out_done_read();
 		}
 	}
+	PORTE.OUTCLR = (1<<3);
 }
 
 ISR(USARTC1_DRE_vect){
-	PORTE.OUTTGL = (1<<3);
-	
-	if ((dac_index == 2) | (dac_index== 4)){
+	if (!(dac_index & 0x1)){ // 2 or 4
 		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc;
 	}else{
 		USARTC1.DATA =  dac_data[dac_index++];
@@ -109,14 +108,13 @@ ISR(USARTC1_DRE_vect){
 }
 
 ISR(USARTC1_TXC_vect){
-	PORTE.OUTTGL = (1<<2);
-
-	PORTC.DIRSET = CS;
-	USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
+	PORTC.OUTSET = CS;
 	if (dac_index < 3){
-		PORTC.DIRCLR = CS;
-		USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
+		PORTC.OUTCLR = CS;
+		USARTC1.CTRLA = USART_DREINTLVL_LO_gc | USART_TXCINTLVL_OFF_gc;
 		USARTC1.DATA =  dac_data[dac_index++];
+	}else{
+		USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
 	}
 }
 
@@ -126,7 +124,7 @@ void initDAC(void){
 	PORTD.OUTSET = DAC_SHDN; 
 	PORTC.DIRSET = LDAC | CS | SCK | TXD1;
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
-	USARTC1.BAUDCTRLA = 15;  // 8MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
+	USARTC1.BAUDCTRLA =  0;  // 16MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
 	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
 	PORTC.OUTSET = CS;
