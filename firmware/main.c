@@ -9,12 +9,12 @@
 #include "hardware.h"
 
 unsigned char in_seqno = 0;
-volatile uint8_t dacWriteIndex = 0; // Position into DACdata.bytes that is next to write
+volatile uint8_t dacWriteIndex = 0; // Position into dac_data that is next to write
 
 uint8_t sampleIndex = 0; // Sample index within packet to be written next
 IN_packet *inPacket=0;
 OUT_packet *outPacket=0;
-volatile uint8_t byteCount = 0;
+volatile uint8_t dac_index = 0;
 
 int main(void){
 	configHardware();
@@ -25,8 +25,11 @@ int main(void){
 	
 	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
 	TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
-	TCC0.PER = 40;
+	TCC0.PER = 400;
 	TCC0.CNT = 0;
+	
+	PORTE.DIRSET = (1<<2) | (1<<3);
+	PORTE.OUT = 0;
 	
 	for (;;){
 		USB_Task(); // Lower-priority USB polling, like control requests
@@ -36,28 +39,24 @@ int main(void){
 	}
 }
 
-volatile union{
-	uint8_t bytes[4];
-	struct {
-		uint8_t flags:4;
-		uint16_t val:12;
-	} __attribute__((packed)) commands[2];
-} DACdata;
+uint8_t dac_data[4];
 
-#define MODE_TO_DACFLAGS(m)  (((m)!=DISABLED)?DACFLAG_ENABLE:0) \
-                            |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0)
+#define MODE_TO_DACFLAGS(m)  ((((m)!=DISABLED)?DACFLAG_ENABLE:0) \
+                            |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0))
 	
 void dac_config(OUT_flags flags){
-	DACdata.commands[0].flags = MODE_TO_DACFLAGS(flags.a_mode);
-	DACdata.commands[1].flags = DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode);
+	dac_data[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
+	dac_data[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
 }
 
-void dac_write(OUT_sample* s){
-	DACdata.commands[0].val = s->a;
-	DACdata.commands[1].val = s->b;
+void dac_write(OUT_sample* s){	
+	dac_data[0] = (dac_data[0] & 0xF0) | ((s->a >> 8) & 0x0F);
+	dac_data[1] = s->a & 0xff;
+	dac_data[2] = (dac_data[2] & 0xF0) | ((s->b >> 8) & 0x0F);
+	dac_data[3] = s->b & 0xff;
+	dac_index = 0;
 	PORTC.OUTCLR = CS;
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
-	USARTC1.DATA = DACdata.bytes[byteCount];
 }
 
 ISR(TCC0_OVF_vect){
@@ -75,8 +74,6 @@ ISR(TCC0_OVF_vect){
 	}
 
 	if (inPacket && outPacket){
-		PORTE.DIRSET = 1 | 2;
-		PORTE.OUTTGL = 1;
 		readADC(&(inPacket->data[sampleIndex]));
 		PORTC.OUTSET = LDAC;
 		PORTC.OUTCLR = LDAC;
@@ -102,23 +99,25 @@ ISR(TCC0_OVF_vect){
 }
 
 ISR(USARTC1_DRE_vect){
-	if ((byteCount == 1) | (byteCount == 3)){
-		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc;
-		USARTC1.CTRLA = USART_DREINTLVL_OFF_gc;
-	}
-	else{
-		USARTC1.DATA =  DACdata.bytes[byteCount++];
+	PORTE.OUTTGL = (1<<3);
+	
+	if ((dac_index == 2) | (dac_index== 4)){
+		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc;
+	}else{
+		USARTC1.DATA =  dac_data[dac_index++];
 	}
 }
 
 ISR(USARTC1_TXC_vect){
+	PORTE.OUTTGL = (1<<2);
+
 	PORTC.DIRSET = CS;
-	if (byteCount < 3){
-		PORTC.DIRCLR = CS;
-		USARTC1.DATA =  DACdata.bytes[byteCount++];
-		USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
-	}
 	USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
+	if (dac_index < 3){
+		PORTC.DIRCLR = CS;
+		USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
+		USARTC1.DATA =  dac_data[dac_index++];
+	}
 }
 
 /* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
@@ -127,7 +126,7 @@ void initDAC(void){
 	PORTD.OUTSET = DAC_SHDN; 
 	PORTC.DIRSET = LDAC | CS | SCK | TXD1;
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
-	USARTC1.BAUDCTRLA = 1;  // 8MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
+	USARTC1.BAUDCTRLA = 15;  // 8MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
 	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
 	PORTC.OUTSET = CS;
