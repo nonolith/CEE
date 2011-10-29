@@ -127,7 +127,7 @@ void initDAC(void){
 	PORTD.OUTSET = DAC_SHDN; 
 	PORTC.DIRSET = LDAC | CS | SCK | TXD1;
 	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
-	USARTC1.BAUDCTRLA = 15;  // 1MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
+	USARTC1.BAUDCTRLA = 1;  // 8MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
 	USARTC1.BAUDCTRLB =  0;
 	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
 	PORTC.OUTSET = CS;
@@ -262,6 +262,7 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				break;
 			case 0xBB:
 				cli();
+				PMIC.CTRL = 0;
 				USB_ep0_send(0);
 				USB_ep0_wait_for_complete();
 				_delay_us(10000);
