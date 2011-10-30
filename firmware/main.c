@@ -9,11 +9,6 @@
 #include "hardware.h"
 
 unsigned char in_seqno = 0;
-volatile uint8_t dacWriteIndex = 0; // Position into dac_data that is next to write
-
-uint8_t sampleIndex = 0; // Sample index within packet to be written next
-IN_packet *inPacket=0;
-OUT_packet *outPacket=0;
 volatile uint8_t dac_index = 0;
 
 int main(void){
@@ -42,12 +37,12 @@ uint8_t dac_data[4];
 #define MODE_TO_DACFLAGS(m)  ((((m)!=DISABLED)?DACFLAG_ENABLE:0) \
                             |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0))
 	
-void dac_config(OUT_flags flags){
+inline void dac_config(OUT_flags flags){
 	dac_data[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
 	dac_data[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
 }
 
-void dac_write(OUT_sample* s){	
+inline void dac_write(OUT_sample* s){	
 	dac_data[0] = (dac_data[0] & 0xF0) | ((s->a >> 8) & 0x0F);
 	dac_data[1] = s->a & 0xff;
 	dac_data[2] = (dac_data[2] & 0xF0) | ((s->b >> 8) & 0x0F);
@@ -58,43 +53,59 @@ void dac_write(OUT_sample* s){
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 }
 
+/* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
+void readADC(IN_sample* s){
+	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
+	s->a_v = ADCA.CH1.RES;
+	s->b_v = ADCA.CH2.RES;
+	s->b_i = ADCA.CH3.RES; // measure CS-B monitoring OPA-A
+}
+
+
+
 ISR(TCC0_OVF_vect){
 	PORTE.OUTSET = (1<<3);
-	if (!inPacket && packetbuf_in_can_write()){
-		inPacket = (IN_packet *) packetbuf_in_write_position();
-
-		// Write packet header (stream debugging data)
+	
+	static uint8_t sampleIndex = 0; // Sample index within packet to be written next
+	static bool have_packet = 0;
+	static IN_packet *inPacket;
+	static OUT_packet *outPacket;
+	
+	if (!have_packet){
+		if (packetbuf_in_can_write() && packetbuf_out_can_read()){
+			have_packet = 1;
+			inPacket = (IN_packet *) packetbuf_in_write_position();
+			outPacket = (OUT_packet *) packetbuf_out_read_position();
+			dac_config(outPacket->flags);
+			sampleIndex = 0;
+		}else{
+			PORTE.OUTCLR = (1<<3);
+			return;
+		}
+	}
+	
+	dac_write(&(outPacket->data[sampleIndex]));	 // start SPI write
+	readADC(&(inPacket->data[sampleIndex]));
+	PORTC.OUTSET = LDAC;
+	PORTC.OUTCLR = LDAC;
+	
+	uint8_t i = sampleIndex++;
+	
+	if (i == 1){
+		// Just latched the 0th sample from this packet to the DAC
+		// Apply the mode for this packet
+		configChannelA(outPacket->flags.a_mode);
+		configChannelB(outPacket->flags.b_mode);
+	} else if (i == 5){
+		// fill header when there's nothing else going on
 		inPacket->seqno = in_seqno++;
 		inPacket->reserved[0] = in_count;
 		inPacket->reserved[1] = out_count;
-	}
-	if (!outPacket && packetbuf_out_can_read()){
-		outPacket = (OUT_packet *) packetbuf_out_read_position();
-		dac_config(outPacket->flags);
-	}
-
-	if (inPacket && outPacket){
-		readADC(&(inPacket->data[sampleIndex]));
-		PORTC.OUTSET = LDAC;
-		PORTC.OUTCLR = LDAC;
-		
-		if (sampleIndex == 1){
-			// Just latched the 0th sample from this packet to the DAC
-			// Apply the mode for this packet
-			configChannelA(outPacket->flags.a_mode);
-			configChannelB(outPacket->flags.b_mode);
-		}
-		
-		dac_write(&(outPacket->data[sampleIndex]));		
-		sampleIndex++;
-
-		if (sampleIndex > 10){
-			sampleIndex = 0;
-			inPacket = 0;
-			outPacket = 0;
-			packetbuf_in_done_write();
-			packetbuf_out_done_read();
-		}
+	} else if (i >= 9){
+		sampleIndex = 0;
+		have_packet = 0;
+		packetbuf_in_done_write();
+		packetbuf_out_done_read();
 	}
 	PORTE.OUTCLR = (1<<3);
 }
@@ -225,21 +236,6 @@ void initADC(void){
 	ADCA.CH3.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // 1.25VREF vs VS-B
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
-
-/* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
-void readADC(IN_sample* s){
-
-	uint8_t offset = 0x16;
-
-	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
-
-	s->a_v = ADCA.CH1.RES + offset;
-
-	s->b_v = ADCA.CH2.RES + offset;
-
-	s->b_i = ADCA.CH3.RES; // measure CS-B monitoring OPA-A
-}
-
 
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
