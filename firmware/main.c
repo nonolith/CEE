@@ -113,6 +113,7 @@ ISR(TCC0_OVF_vect){
 ISR(USARTC1_DRE_vect){
 	if (!(dac_index & 0x1)){ // 2 or 4
 		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc;
+		USARTC1.STATUS = USART_TXCIF_bm;
 	}else{
 		USARTC1.DATA =  dac_data[dac_index++];
 	}
