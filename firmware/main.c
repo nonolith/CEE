@@ -55,10 +55,10 @@ inline void dac_write(OUT_sample* s){
 
 /* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
 void readADC(IN_sample* s){
-	s->a_i = ADCA.CH0.RES; //measure CS-A, monitoring OPA-B
-	s->a_v = ADCA.CH1.RES;
-	s->b_v = ADCA.CH2.RES;
-	s->b_i = ADCA.CH3.RES; // measure CS-B monitoring OPA-A
+	s->a_i = ADCA.CH0.RES; // VS-A
+	s->a_v = ADCA.CH1.RES; // ADC-A
+	s->b_v = ADCA.CH2.RES; // ADC-B
+	s->b_i = ADCA.CH3.RES; // VS-B
 }
 
 
@@ -232,8 +232,8 @@ void initADC(void){
 	ADCA.CH2.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
 	ADCA.CH3.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | ADC_CH_GAIN_1X_gc;
 	ADCA.CH0.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN1_gc; // 1.25VREF vs VS-A
-	ADCA.CH1.MUXCTRL = 0b100 |  ADC_CH_MUXPOS_PIN2_gc; // INTGND vs ADC-A
-	ADCA.CH2.MUXCTRL = 0b100 | ADC_CH_MUXPOS_PIN6_gc; // INTGND vs ADC-B
+	ADCA.CH1.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc |  ADC_CH_MUXPOS_PIN2_gc; // INTGND vs ADC-A
+	ADCA.CH2.MUXCTRL = ADC_CH_MUXNEG_PIN4_gc | ADC_CH_MUXPOS_PIN6_gc; // INTGND vs ADC-B
 	ADCA.CH3.MUXCTRL = ADC_CH_MUXNEG_PIN5_gc | ADC_CH_MUXPOS_PIN7_gc; // 1.25VREF vs VS-B
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
@@ -252,6 +252,23 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				break;
 			case 0xAB:
 				writeChannel(1, req->wIndex, req->wValue);
+				USB_ep0_send(0);
+				break;
+			case 0x65:
+				switch (req->wIndex){
+					case 0x00:
+				    	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | req->wValue; // VS-A
+						break;
+					case 0x01:
+				    	ADCA.CH1.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | req->wValue; // ADC-A
+						break;
+					case 0x02:
+				    	ADCA.CH2.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | req->wValue; // ADC-B
+						break;
+					case 0x03:
+				    	ADCA.CH3.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | req->wValue; // VS-B
+						break;
+				}
 				USB_ep0_send(0);
 				break;
 			case 0xBB:
