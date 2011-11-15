@@ -68,4 +68,4 @@ void writeChannelA(uint8_t state);
 void writeChannelB(uint8_t state);
 void readADC(IN_sample* s);
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req);
-
+void configISET(void);

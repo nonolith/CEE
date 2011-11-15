@@ -143,6 +143,13 @@ void initDAC(void){
 	PORTC.OUTCLR = LDAC | CS; // LDAC, SCK low
 }
 
+void configISET(void){
+	DACB.CTRLA |= DAC_CH1EN_bm | DAC_ENABLE_bm;
+	DACB.CTRLB |= DAC_CHSEL1_bm;
+	DACB.CTRLC |= DAC_REFSEL_INT1V_gc;
+	DACB.CH1DATA = 0xF32; // 0xF32/0xFFF*1V = .95V, 9800*(1.18V-.95V)/5600O = .4025A
+}
+
 /* Configure the pin modes for the switches and opamps. */
 void initChannels(void){
 	PORTD.DIRSET = SHDN_INS_A | SWMODE_A | SHDN_INS_B | EN_OPA_A;
@@ -150,6 +157,9 @@ void initChannels(void){
 	PORTD.DIRCLR = TFLAG_A;
 	PORTC.DIRCLR = TFLAG_B;
 	PORTB.DIRSET = ISET;
+	PORTD.OUTCLR = EN_OPA_A;
+	PORTC.OUTCLR = EN_OPA_B;
+	configISET();
 }
 
 /* Configure the shutdown/enable pin states and set the SPDT switch states. */
