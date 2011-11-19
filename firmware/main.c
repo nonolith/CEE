@@ -146,8 +146,8 @@ void initDAC(void){
 void configISET(void){
 	DACB.CTRLA |= DAC_CH1EN_bm | DAC_ENABLE_bm;
 	DACB.CTRLB |= DAC_CHSEL1_bm;
-	DACB.CTRLC |= DAC_REFSEL_INT1V_gc;
-	DACB.CH1DATA = 0xF32; // 0xF32/0xFFF*1V = .95V, 9800*(1.18V-.95V)/5600O = .4025A
+	DACB.CTRLC |= DAC_REFSEL_AREFA_gc; //2.5VREF
+	DACB.CH1DATA = 0x6B7; // 0x6B7/0xFFF*2.5V = 1.05V, 9800*(1.18V-1.05)/560O = 0.227
 }
 
 /* Configure the pin modes for the switches and opamps. */
