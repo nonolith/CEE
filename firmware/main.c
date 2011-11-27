@@ -9,7 +9,7 @@
 #include "hardware.h"
 
 unsigned char in_seqno = 0;
-volatile uint8_t dac_index = 0;
+volatile uint8_t indexDataDAC = 0;
 
 int main(void){
 	configHardware();
@@ -23,33 +23,30 @@ int main(void){
 	TCC0.PER = 160;
 	TCC0.CNT = 0;
 	
-	PORTE.DIRSET = (1<<2) | (1<<3);
-	PORTE.OUT = 0;
-	
 	for (;;){
 		USB_Task(); // Lower-priority USB polling, like control requests
 		packetbuf_endpoint_poll();
 	}
 }
 
-uint8_t dac_data[4];
+uint8_t dataDAC[4];
 
 #define MODE_TO_DACFLAGS(m)  ((((m)!=DISABLED)?DACFLAG_ENABLE:0) \
                             |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0))
 	
 inline void dac_config(OUT_flags flags){
-	dac_data[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
-	dac_data[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
+	dataDAC[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
+	dataDAC[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
 }
 
-inline void dac_write(OUT_sample* s){	
-	dac_data[0] = (dac_data[0] & 0xF0) | ((s->a >> 8) & 0x0F);
-	dac_data[1] = s->a & 0xff;
-	dac_data[2] = (dac_data[2] & 0xF0) | ((s->b >> 8) & 0x0F);
-	dac_data[3] = s->b & 0xff;
-	dac_index = 0;
+inline void startWriteDAC(OUT_sample* s){	
+	dataDAC[0] = (dataDAC[0] & 0xF0) | ((s->a >> 8) & 0x0F); // go from outSample->a to high byte of SPI transfer to DAC
+	dataDAC[1] = s->a & 0xff;
+	dataDAC[2] = (dataDAC[2] & 0xF0) | ((s->b >> 8) & 0x0F);
+	dataDAC[3] = s->b & 0xff;
+	indexDataDAC = 0;
 	PORTC.OUTCLR = CS;
-	USARTC1.DATA =  dac_data[dac_index++];
+	USARTC1.DATA =  dataDAC[indexDataDAC++];
 	USARTC1.CTRLA = USART_DREINTLVL_LO_gc;
 }
 
@@ -64,29 +61,28 @@ void readADC(IN_sample* s){
 
 
 ISR(TCC0_OVF_vect){
-	PORTE.OUTSET = (1<<3);
 	
 	static uint8_t sampleIndex = 0; // Sample index within packet to be written next
-	static bool have_packet = 0;
+	static bool havePacket = 0;
 	static IN_packet *inPacket;
 	static OUT_packet *outPacket;
 	
-	if (!have_packet){
+	if (!havePacket){
 		if (packetbuf_in_can_write() && packetbuf_out_can_read()){
-			have_packet = 1;
+			havePacket = 1;
 			inPacket = (IN_packet *) packetbuf_in_write_position();
 			outPacket = (OUT_packet *) packetbuf_out_read_position();
 			dac_config(outPacket->flags);
 			sampleIndex = 0;
 		}else{
-			PORTE.OUTCLR = (1<<3);
 			return;
 		}
 	}
 	
-	dac_write(&(outPacket->data[sampleIndex]));	 // start SPI write
+	startWriteDAC(&(outPacket->data[sampleIndex]));	 // start SPI write
 	readADC(&(inPacket->data[sampleIndex]));
-	PORTC.OUTSET = LDAC;
+
+	PORTC.OUTSET = LDAC; // toggle LDAC
 	PORTC.OUTCLR = LDAC;
 	
 	uint8_t i = sampleIndex++;
@@ -103,28 +99,28 @@ ISR(TCC0_OVF_vect){
 		inPacket->reserved[1] = out_count;
 	} else if (i >= 9){
 		sampleIndex = 0;
-		have_packet = 0;
+		havePacket = 0;
 		packetbuf_in_done_write();
 		packetbuf_out_done_read();
 	}
-	PORTE.OUTCLR = (1<<3);
+
 }
 
 ISR(USARTC1_DRE_vect){
-	if (!(dac_index & 0x1)){ // 2 or 4
+	if (!(indexDataDAC & 0x1)){ // 2 or 4
 		USARTC1.CTRLA = USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc;
 		USARTC1.STATUS = USART_TXCIF_bm;
 	}else{
-		USARTC1.DATA =  dac_data[dac_index++];
+		USARTC1.DATA =  dataDAC[indexDataDAC++];
 	}
 }
 
 ISR(USARTC1_TXC_vect){
 	PORTC.OUTSET = CS;
-	if (dac_index < 3){
+	if (indexDataDAC < 3){
 		PORTC.OUTCLR = CS;
 		USARTC1.CTRLA = USART_DREINTLVL_LO_gc | USART_TXCINTLVL_OFF_gc;
-		USARTC1.DATA =  dac_data[dac_index++];
+		USARTC1.DATA =  dataDAC[indexDataDAC++];
 	}else{
 		USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc;
 	}
