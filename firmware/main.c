@@ -7,9 +7,9 @@
 #include "cee.h"
 #include "packetbuffer.h"
 #include "hardware.h"
+#include "dac.c"
 
 unsigned char in_seqno = 0;
-volatile uint8_t indexDataDAC = 0;
 
 int main(void){
 	configHardware();
@@ -27,27 +27,6 @@ int main(void){
 		USB_Task(); // Lower-priority USB polling, like control requests
 		packetbuf_endpoint_poll();
 	}
-}
-
-uint8_t dataDAC[4];
-
-#define MODE_TO_DACFLAGS(m)  ((((m)!=DISABLED)?DACFLAG_ENABLE:0) \
-                            |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0))
-	
-inline void dac_config(OUT_flags flags){
-	dataDAC[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
-	dataDAC[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
-}
-
-inline void startWriteDAC(OUT_sample* s){	
-	dataDAC[0] = (dataDAC[0] & 0xF0) | ((s->a >> 8) & 0x0F); // go from outSample->a to high byte of SPI transfer to DAC
-	dataDAC[1] = s->a & 0xff;
-	dataDAC[2] = (dataDAC[2] & 0xF0) | ((s->b >> 8) & 0x0F);
-	dataDAC[3] = s->b & 0xff;
-	indexDataDAC = 0; // reset index
-	PORTC.OUTCLR = CS; // CS low, start transfer
-	USARTC1.DATA =  dataDAC[indexDataDAC++]; // write byte 0
-	USARTC1.CTRLA = USART_DREINTLVL_LO_gc; // enable DRE
 }
 
 /* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
@@ -72,14 +51,14 @@ ISR(TCC0_OVF_vect){
 			havePacket = 1;
 			inPacket = (IN_packet *) packetbuf_in_write_position();
 			outPacket = (OUT_packet *) packetbuf_out_read_position();
-			dac_config(outPacket->flags);
+			DAC_config(outPacket->flags);
 			sampleIndex = 0;
 		}else{
 			return;
 		}
 	}
 	
-	startWriteDAC(&(outPacket->data[sampleIndex]));	 // start SPI write
+	DAC_startWrite(&(outPacket->data[sampleIndex]));	 // start SPI write
 	readADC(&(inPacket->data[sampleIndex]));
 
 	PORTC.OUTSET = LDAC; // toggle LDAC
@@ -106,35 +85,6 @@ ISR(TCC0_OVF_vect){
 
 }
 
-ISR(USARTC1_DRE_vect){
-	USARTC1.DATA =  dataDAC[indexDataDAC++]; // write byte 1 or 3
-	USARTC1.CTRLA = USART_TXCINTLVL_LO_gc | USART_DREINTLVL_OFF_gc; // enable TXC, disable DRE
-	USARTC1.STATUS = USART_TXCIF_bm; // clear TXC
-}
-
-ISR(USARTC1_TXC_vect){
-	PORTC.OUTSET = CS; // CS high
-	if (indexDataDAC == 2){
-		PORTC.OUTCLR = CS; // CS low
-		USARTC1.CTRLA = USART_DREINTLVL_LO_gc | USART_TXCINTLVL_OFF_gc; // enable DRE, disable TXC
-		USARTC1.DATA =  dataDAC[indexDataDAC++]; // write byte 2, increment counter
-	}else{
-		USARTC1.CTRLA = USART_TXCINTLVL_OFF_gc; // disable TXC
-	}
-}
-
-/* Configures the XMEGA's USARTC1 to talk to the digital-analog converter. */ 
-void initDAC(void){
-	PORTD.DIRSET = DAC_SHDN;
-	PORTD.OUTSET = DAC_SHDN; 
-	PORTC.DIRSET = LDAC | CS | SCK | TXD1;
-	USARTC1.CTRLC = USART_CMODE_MSPI_gc; // SPI master, MSB first, sample on rising clock (UCPHA=0)
-	USARTC1.BAUDCTRLA =  0;  // 16MHz SPI clock. XMEGA AU manual 23.15.6 & 23.3.1
-	USARTC1.BAUDCTRLB =  0;
-	USARTC1.CTRLB = USART_TXEN_bm; // enable TX
-	PORTC.OUTSET = CS;
-	PORTC.OUTCLR = LDAC | CS; // LDAC, SCK low
-}
 
 void configISET(void){
 	DACB.CTRLA |= DAC_CH1EN_bm | DAC_ENABLE_bm;
@@ -191,16 +141,7 @@ void configChannelB(chan_mode state){
 		}
 }
 
-/* Write a value to a specified channel of the DAC with specified flags. */
-void writeDAC(uint8_t flags, uint16_t value){
-	PORTC.OUTCLR = CS;
-	USARTC1.DATA = ((flags<<4) & 0xF0) | ((value >> 8) & 0x0F); // munge channel, flags, and four MSB of the value into a single byte
-	while(!(USARTC1.STATUS & USART_DREIF_bm)); // wait until we can write another byte
-	USARTC1.STATUS = USART_TXCIF_bm; // clear TX complete flag
-	USARTC1.DATA = value & 0xFF;
-	while(!(USARTC1.STATUS & USART_TXCIF_bm)); // wait for TX complete flag
-	PORTC.OUTSET = CS;
-}
+
 
 /* Take a channel, state, and value and configure the switches, shutdowns, and DACs. High level abstraction. */
 void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
@@ -212,12 +153,12 @@ void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
 	if (channel == 0) configChannelA(state);
 	else              configChannelB(state);
 
-	writeDAC(dacflags, value);
+	DAC_write(dacflags, value);
 }
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
-	initDAC();
+	DAC_init();
 	initADC();
 	initChannels();
 	USB_ConfigureClock();
