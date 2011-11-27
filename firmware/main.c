@@ -186,19 +186,19 @@ void initADC(void){
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
 		switch(req->bRequest){
-			case 0xA0:
+			case 0xA0: // read ADC
 				readADC((IN_sample *) ep0_buf_in);
 				USB_ep0_send(sizeof(IN_sample));
 				break;
-			case 0xAA:
+			case 0xAA: // write to channel A
 				writeChannel(0, req->wIndex, req->wValue);
 				USB_ep0_send(0);
 				break;
-			case 0xAB:
+			case 0xAB: // write to channel B
 				writeChannel(1, req->wIndex, req->wValue);
 				USB_ep0_send(0);
 				break;
-			case 0x65:
+			case 0x65: // set gains
 				switch (req->wIndex){
 					case 0x00:
 				    	ADCA.CH0.CTRL = ADC_CH_INPUTMODE_DIFFWGAIN_gc | req->wValue; // VS-A
@@ -215,7 +215,7 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				}
 				USB_ep0_send(0);
 				break;
-			case 0xBB:
+			case 0xBB: // disconnect from USB, jump to bootloader
 				cli();
 				PMIC.CTRL = 0;
 				USB_ep0_send(0);
