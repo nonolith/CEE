@@ -80,10 +80,10 @@ inline void DAC_config(OUT_flags flags){
 /// Begin a non-blocking DAC write of the data from an OUT_Sample
 inline void DAC_startWrite(OUT_sample* s){
 	// Put out_sample into DAC_data, preserving the flags stored by DAC_config
-	DAC_data[0] = (DAC_data[0] & 0xF0) | ((s->a >> 8) & 0x0F);
-	DAC_data[1] = s->a & 0xff;
-	DAC_data[2] = (DAC_data[2] & 0xF0) | ((s->b >> 8) & 0x0F);
-	DAC_data[3] = s->b & 0xff;
+	DAC_data[0] = (DAC_data[0] & 0xF0) | (s->bh_ah & 0x0F);
+	DAC_data[1] = s->al;
+	DAC_data[2] = (DAC_data[2] & 0xF0) | (s->bh_ah >> 4);
+	DAC_data[3] = s->bl;
 	DAC_index = 0; // reset index
 	PORTC.OUTCLR = CS; // CS low, start transfer
 	USARTC1.DATA =  DAC_data[DAC_index++]; // write byte 0

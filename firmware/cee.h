@@ -26,11 +26,8 @@ void configChannelB(chan_mode state);
 
 // type definitions
 typedef struct IN_sample{
-	unsigned a_v:12;
-	unsigned a_i:12;
-	unsigned b_v:12;
-	unsigned b_i:12;
-} __attribute__((packed)) IN_sample;
+	uint8_t avl, ail, aih_avh, bvl, bil, bih_bvh;
+} IN_sample;
 
 typedef struct IN_packet{
 	unsigned char seqno;
@@ -40,8 +37,7 @@ typedef struct IN_packet{
 } __attribute__((packed)) IN_packet;
 
 typedef struct OUT_sample{
-	unsigned a:12;
-	unsigned b:12;
+	uint8_t al, bl, bh_ah;
 } __attribute__((packed)) OUT_sample;
 
 

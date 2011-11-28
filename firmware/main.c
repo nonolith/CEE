@@ -30,11 +30,20 @@ int main(void){
 }
 
 /* Read the voltage and current from the two channels, pulling the latest samples off "ADCA.CHx.RES" registers. */
-void readADC(IN_sample* s){
-	s->a_i = ADCA.CH0.RES; // VS-A
-	s->a_v = ADCA.CH1.RES; // ADC-A
-	s->b_v = ADCA.CH2.RES; // ADC-B
-	s->b_i = ADCA.CH3.RES; // VS-B
+void readADC(IN_sample* const s){
+	uint8_t A_Il = ADCA.CH0.RESL, A_Ih = ADCA.CH0.RESH;
+	uint8_t A_Vl = ADCA.CH1.RESL, A_Vh = ADCA.CH1.RESH;
+
+	s->avl = A_Vl;
+	s->ail = A_Il;
+	s->aih_avh = (A_Ih << 4) | A_Vh;
+
+	uint8_t B_Vl = ADCA.CH2.RESL, B_Vh = ADCA.CH2.RESH;
+	uint8_t B_Il = ADCA.CH3.RESL, B_Ih = ADCA.CH3.RESH;
+
+	s->bvl = B_Vl;
+	s->bil = B_Il;
+	s->bih_bvh = (B_Ih << 4) | B_Vh;
 }
 
 
