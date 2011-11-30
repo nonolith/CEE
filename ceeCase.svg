@@ -10,15 +10,6 @@
    id="svg2">
   <defs
      id="defs4" />
-  <rect
-     width="297.63779"
-     height="191.33858"
-     rx="31.889763"
-     ry="31.889763"
-     x="0"
-     y="-4.2968747e-07"
-     id="rect2816"
-     style="fill:none;stroke:#000000;stroke-width:0.03543307;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
      d="m 37.142371,159.44876 a 5.252534,5.2525176 0 0 1 -10.505068,0 5.252534,5.2525176 0 1 1 10.505068,0 z"
      id="path3590"
@@ -197,4 +188,8 @@
   <g
      id="layer2"
      style="display:inline" />
+  <path
+     d="M 31.875,-2.7294922e-6 C 14.208071,-2.7294922e-6 0,14.208068 0,31.874997 L 0,159.4375 c 0,17.66693 14.208071,31.90625 31.875,31.90625 l 233.875,0 c 17.66693,0 31.875,-14.23932 31.875,-31.90625 l 0,-40.73672 c 0,-3.58182 -3.53125,0.0404 -3.53125,-3.54331 l 0,-38.976376 c 0,-3.543307 3.53125,0.06127 3.53125,-3.543307 l 0,-40.76279 C 297.625,14.208068 283.41693,-2.7294922e-6 265.75,-2.7294922e-6 l -233.875,0 z"
+     id="rect2816-4"
+     style="fill:none;stroke:#000000;stroke-width:0.035;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline" />
 </svg>
