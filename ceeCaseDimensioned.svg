@@ -27,10 +27,10 @@
      inkscape:window-width="1440"
      inkscape:window-height="825"
      id="namedview43"
-     showgrid="false"
-     inkscape:zoom="1.5299696"
-     inkscape:cx="171.18655"
-     inkscape:cy="70.205659"
+     showgrid="true"
+     inkscape:zoom="2.1637038"
+     inkscape:cx="112.95679"
+     inkscape:cy="81.552293"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -74,6 +74,16 @@
        orientation="0,1"
        position="0,191.33858"
        id="guide5802" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid4051"
+       empspacing="2"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       units="mm"
+       spacingx="0.5mm"
+       spacingy="0.5mm" />
   </sodipodi:namedview>
   <defs
      id="defs4">
@@ -314,6 +324,13 @@
          style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
          transform="matrix(-0.4,0,0,-0.4,-4,0)" />
     </marker>
+    <inkscape:perspective
+       id="perspective3170"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <metadata
      id="metadata7">
@@ -529,15 +546,11 @@
      id="layer3"
      inkscape:label="cut"
      style="display:inline">
-    <rect
+    <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="M 31.875,0 C 14.208071,0 0,14.208071 0,31.875 l 0,127.5625 c 0,17.66693 14.208071,31.90625 31.875,31.90625 l 233.875,0 c 17.66693,0 31.875,-14.23932 31.875,-31.90625 l 0,-40.73672 c 0,-3.58182 -3.53125,0.0404 -3.53125,-3.54331 l 0,-38.976373 c 0,-3.543307 3.53125,0.06127 3.53125,-3.543307 l 0,-40.76279 C 297.625,14.208071 283.41693,0 265.75,0 L 31.875,0 z"
        id="rect2816"
-       y="-2.7294923e-06"
-       x="0"
-       ry="31.889763"
-       rx="31.889763"
-       height="191.33858"
-       width="297.63779" />
+       sodipodi:nodetypes="ccccccccccccc" />
     <path
        inkscape:connector-curvature="0"
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
