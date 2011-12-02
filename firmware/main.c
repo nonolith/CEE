@@ -100,6 +100,7 @@ void configISET(void){
 	DACB.CTRLB |= DAC_CHSEL1_bm;
 	DACB.CTRLC |= DAC_REFSEL_AREFA_gc; //2.5VREF
 	DACB.CH1DATA = 0x6B7; // 0x6B7/0xFFF*2.5V = 1.05V, 9800*(1.18V-1.05)/560O = 0.227
+	DACB.CH0DATA = 0x6B7; // 0x6B7/0xFFF*2.5V = 1.05V, 9800*(1.18V-1.05)/560O = 0.227
 }
 
 /* Configure the pin modes for the switches and opamps. */
@@ -108,7 +109,7 @@ void initChannels(void){
 	PORTC.DIRSET = SWMODE_B | EN_OPA_B;
 	PORTD.DIRCLR = TFLAG_A;
 	PORTC.DIRCLR = TFLAG_B;
-	PORTB.DIRSET = ISET;
+	PORTB.DIRSET = ISET_A | ISET_B;
 	PORTD.OUTCLR = EN_OPA_A;
 	PORTC.OUTCLR = EN_OPA_B;
 	configISET();

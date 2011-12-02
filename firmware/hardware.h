@@ -26,5 +26,6 @@
 #define EN_OPA_B	(1 << 0)
 #define TFLAG_A	(1 << 4)
 #define	TFLAG_B	(1 << 1)
-#define ISET	(1 << 3)
+#define ISET_B	(1 << 3)
+#define ISET_A	(1 << 2)
 
