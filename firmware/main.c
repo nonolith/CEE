@@ -36,14 +36,14 @@ void readADC(IN_sample* const s){
 
 	s->avl = A_Vl;
 	s->ail = A_Il;
-	s->aih_avh = (A_Ih << 4) | A_Vh;
+	s->aih_avh = (A_Ih << 4) | (A_Vh&0x0f);
 
 	uint8_t B_Vl = ADCA.CH2.RESL, B_Vh = ADCA.CH2.RESH;
 	uint8_t B_Il = ADCA.CH3.RESL, B_Ih = ADCA.CH3.RESH;
 
 	s->bvl = B_Vl;
 	s->bil = B_Il;
-	s->bih_bvh = (B_Ih << 4) | B_Vh;
+	s->bih_bvh = (B_Ih << 4) | (B_Vh&0x0f);
 }
 
 
