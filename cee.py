@@ -1,30 +1,34 @@
 import usb.core
 
-MODE_DISABLED=0
-MODE_SVMI=1
-MODE_SIMV=2
-gainMapping = {1:0x00<<2, 2:0x01<<2, 4:0x02<<2, 8:0x03<<2, 16:0x04<<2, 32:0x05<<2, 64:0x06<<2, .5:0x07<<2}
-chanMapping = {0:'a_i', 1:'a_v', 2:'b_v', 3:'b_i'}
+MODE_DISABLED=0 # channel in high-impedance mode, output opamps disabled
+MODE_SVMI=1 # set voltage, measure current
+MODE_SIMV=2 # set current, measure voltage
+
+gainMapping = {1:0x00<<2, 2:0x01<<2, 4:0x02<<2, 8:0x03<<2, 16:0x04<<2, 32:0x05<<2, 64:0x06<<2, .5:0x07<<2} # internal gain mappings
+
+chanMapping = {0:'a_i', 1:'a_v', 2:'b_v', 3:'b_i'} # internal channel mappings
 
 def unpackSign(n):
+	"""undo two's complement signing of 12 bit values"""
 	return n - (1<<12) if n>2048 else n
 
 class CEE(object):
 	def __init__(self):
-		self.dev = usb.core.find(idVendor=0x9999, idProduct=0xffff)
-		self.gains = 4*[1]
-		self.setGain(0, 1) # set all gains to 1 
-		self.setGain(1, 1)
-		self.setGain(2, 1)
-		self.setGain(3, 1)
+		self.dev = usb.core.find(idVendor=0x9999, idProduct=0xffff) #VID and PID will change before we ship
+		self.gains = 4*[1] # set all gains to 1
+		self.setGain(0, self.gains[0])
+		self.setGain(1, self.gains[1])
+		self.setGain(2, self.gains[2])
+		self.setGain(3, self.gains[3])
 		if not self.dev:
 			raise IOError("device not found")
 			
 	def b12unpack(self, s):
-		"Turn a 3-byte string containing 2 12-bit values into two ints"
+		"""Turn a 3-byte string containing 2 12-bit values into two ints"""
 		return ((((s[2]&0x0f)<<8) | s[0])), ((((s[2]&0xf0)<<4) | s[1]))
 
 	def readADC(self):
+		"""Read six bytes from vRequest 0xA0, unpack the data, and do math to convert the binary integers to real-world floats"""
 		data = self.dev.ctrl_transfer(0x40|0x80, 0xA0, 0, 0, 6)
 		l = self.b12unpack(data[0:3]) + self.b12unpack(data[3:6])
 		vals = map(unpackSign, l)
@@ -36,6 +40,7 @@ class CEE(object):
 		}
 
 	def set(self, chan, v=None, i=None):
+		"""Convert a real-world float to a binary number and write the intended value of the DAC to vRequest 0xAA or 0xAB."""
 		"""v is voltage in volts, i is current in amps"""
 		cmd = 0xAA+chan
 		if v is not None:
