@@ -58,10 +58,13 @@ void configureSampling(uint16_t mode, uint16_t period){
 		TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
 		TCC0.PER = period;
 		TCC0.CNT = 0;
+	}else{
+		configChannelA(DISABLED);
+		configChannelB(DISABLED);
 	}
 }
 
-ISR(TCC0_OVF_vect){	
+ISR(TCC0_OVF_vect){
 	if (!havePacket){
 		if (packetbuf_in_can_write() && packetbuf_out_can_read()){
 			havePacket = 1;
