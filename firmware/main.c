@@ -13,15 +13,9 @@ unsigned char in_seqno = 0;
 
 int main(void){
 	configHardware();
-	packetbuf_endpoint_init();
 	
 	PMIC.CTRL = PMIC_LOLVLEN_bm;
 	sei();	
-	
-	TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
-	TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
-	TCC0.PER = 160;
-	TCC0.CNT = 0;
 	
 	for (;;){
 		USB_Task(); // Lower-priority USB polling, like control requests
@@ -47,14 +41,27 @@ void readADC(IN_sample* const s){
 }
 
 
+uint8_t sampleIndex = 0; // Sample index within packet to be written next
+bool havePacket = 0;
+IN_packet *inPacket;
+OUT_packet *outPacket;
 
-ISR(TCC0_OVF_vect){
+void configureSampling(uint16_t mode, uint16_t period){
+	TCC0.INTCTRLA = TC_OVFINTLVL_OFF_gc;
+	TCC0.CTRLA = 0;
+	sampleIndex = 0;
+	havePacket = 0;
 	
-	static uint8_t sampleIndex = 0; // Sample index within packet to be written next
-	static bool havePacket = 0;
-	static IN_packet *inPacket;
-	static OUT_packet *outPacket;
-	
+	if (mode == 1 && period > 80){
+		packetbuf_endpoint_init(); // clear buffers
+		TCC0.CTRLA = TC_CLKSEL_DIV8_gc; // 4Mhz
+		TCC0.INTCTRLA = TC_OVFINTLVL_LO_gc;
+		TCC0.PER = period;
+		TCC0.CNT = 0;
+	}
+}
+
+ISR(TCC0_OVF_vect){	
 	if (!havePacket){
 		if (packetbuf_in_can_write() && packetbuf_out_can_read()){
 			havePacket = 1;
@@ -236,6 +243,12 @@ bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 				}
 				USB_ep0_send(0);
 				break;
+				
+			case 0x80: // Configure sampling	
+				configureSampling(req->wIndex /*mode*/ , req->wValue /*period*/);
+				USB_ep0_send(0);
+				break;
+			
 			case 0xBB: // disconnect from USB, jump to bootloader
 				cli();
 				PMIC.CTRL = 0;
