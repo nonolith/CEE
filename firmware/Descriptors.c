@@ -53,8 +53,8 @@ const USB_Descriptor_Device_t PROGMEM XmegaExample_DeviceDescriptor =
 	.Protocol               = USB_CSCP_NoDeviceProtocol,
 
 	.Endpoint0Size          = 64,
-	.VendorID               = 0x9999,
-	.ProductID              = 0xffff,
+	.VendorID               = 0x59E3,
+	.ProductID              = 0xCEE1,
 	.ReleaseNumber          = VERSION_BCD(02.00),
 
 	.ManufacturerStrIndex   = 0x01,
@@ -151,7 +151,7 @@ const USB_Descriptor_String_t PROGMEM XmegaExample_ProductString =
 {
 	.Header                 = {.Size = USB_STRING_LEN(8), .Type = DTYPE_String},
 
-	.UnicodeString          = L"CEE beta"
+	.UnicodeString          = L"CEE"
 };
 
 
