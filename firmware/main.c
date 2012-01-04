@@ -61,18 +61,21 @@ void configureSampling(uint16_t mode, uint16_t period){
 	}else{
 		configChannelA(DISABLED);
 		configChannelB(DISABLED);
+		PORTR.OUTCLR = 1 << 1;
 	}
 }
 
 ISR(TCC0_OVF_vect){
 	if (!havePacket){
 		if (packetbuf_in_can_write() && packetbuf_out_can_read()){
+			PORTR.OUTSET = 1 << 1;
 			havePacket = 1;
 			inPacket = (IN_packet *) packetbuf_in_write_position();
 			outPacket = (OUT_packet *) packetbuf_out_read_position();
 			DAC_config(outPacket->flags);
 			sampleIndex = 0;
 		}else{
+			PORTR.OUTCLR = 1 << 1;
 			return;
 		}
 	}
@@ -178,10 +181,14 @@ void writeChannel(uint8_t channel, uint8_t state, uint16_t value){
 
 /* Configures the board hardware and chip peripherals for the project's functionality. */
 void configHardware(void){
+	USB_ConfigureClock();
+	PORTR.DIRSET = 1 << 1;
+	PORTR.OUTSET = 1 << 1;
+	_delay_ms(50);
+	PORTR.OUTCLR = 1 << 1;
 	DAC_init();
 	initADC();
 	initChannels();
-	USB_ConfigureClock();
 	USB_Init();
 }
 
