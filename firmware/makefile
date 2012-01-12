@@ -58,6 +58,8 @@
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
 
+HW_PRODUCT="Nonolith CEE"
+HW_VERSION="1.0"
 
 # MCU name
 MCU = atxmega32a4
@@ -701,9 +703,14 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 # Include the dependency files.
 -include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
+bootload_only:
+	make -Cusb/bootloader HW_PRODUCT=$(HW_PRODUCT) HW_VERSION=$(HW_VERSION) program
+	sleep 0.5
+	
+bootload: bootload_only update
 
 # Listing of phony targets.
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex eep lss sym coff extcoff doxygen clean          \
 clean_list clean_doxygen program dfu flip flip-ee dfu-ee      \
-debug gdb-config checksource
+debug gdb-config checksource bootload_only bootload
