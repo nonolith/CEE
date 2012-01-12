@@ -450,7 +450,7 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-build: elf hex 
+build: elf hex cee.json
 #eep lss sym
 #build: lib
 
@@ -708,6 +708,9 @@ bootload_only:
 	sleep 0.5
 	
 bootload: bootload_only update
+
+cee.json: cee.hex
+	python make_fwupdate.py cee.hex
 
 # Listing of phony targets.
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
