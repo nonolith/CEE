@@ -58,8 +58,9 @@
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
 
-HW_PRODUCT="Nonolith CEE"
-HW_VERSION="1.0"
+HW_PRODUCT=Nonolith CEE
+HW_VERSION=1.0
+FW_VERSION=$(shell git describe --always --dirty='*')
 
 # MCU name
 MCU = atxmega32a4
@@ -169,6 +170,8 @@ CDEFS  = -DF_CPU=$(F_CPU)UL
 CDEFS += -DF_USB=$(F_USB)UL
 CDEFS += -DBOARD=BOARD_$(BOARD) -DARCH=ARCH_$(ARCH)
 CDEFS += $(USB_OPTS)
+CDEFS += -D'HW_VERSION=$(HW_VERSION)'
+CDEFS += -D'FW_VERSION=$(FW_VERSION)'
 
 
 # Place -D or -U options here for ASM sources
@@ -704,7 +707,7 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 -include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
 bootload_only:
-	make -Cusb/bootloader HW_PRODUCT=$(HW_PRODUCT) HW_VERSION=$(HW_VERSION) program
+	make -Cusb/bootloader HW_PRODUCT="$(HW_PRODUCT)" HW_VERSION="$(HW_VERSION)" program
 	sleep 0.5
 	
 bootload: bootload_only update

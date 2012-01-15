@@ -209,10 +209,23 @@ void initADC(void){
 	ADCA.CTRLA = ADC_ENABLE_bm;
 }
 
+#define xstringify(s) stringify(s)
+#define stringify(s) #s
+
+const char PROGMEM hwversion[] = xstringify(HW_VERSION);
+const char PROGMEM fwversion[] = xstringify(FW_VERSION);
+
 /** Event handler for the library USB Control Request reception event. */
 bool EVENT_USB_Device_ControlRequest(USB_Request_Header_t* req){
 	if ((req->bmRequestType & CONTROL_REQTYPE_TYPE) == REQTYPE_VENDOR){
 		switch(req->bRequest){
+			case 0x00: // Info
+				if (req->wIndex == 0){
+					USB_ep0_send_progmem((uint8_t*)hwversion, sizeof(hwversion));
+				}else if (req->wIndex == 1){
+					USB_ep0_send_progmem((uint8_t*)fwversion, sizeof(fwversion));
+				}
+				break;
 			case 0xA0: // read ADC
 				readADC((IN_sample *) ep0_buf_in);
 				USB_ep0_send(sizeof(IN_sample));
