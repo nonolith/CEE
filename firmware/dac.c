@@ -72,9 +72,9 @@ volatile uint8_t DAC_index = 0;
                             |(((m)==SIMV)?DACFLAG_NO_MULT_REF:0))
 
 /// Update the config nibbles to DAC_data based on the new flags
-inline void DAC_config(OUT_flags flags){
-	DAC_data[0] = MODE_TO_DACFLAGS(flags.a_mode) << 4;
-	DAC_data[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(flags.b_mode)) << 4;
+inline void DAC_config(uint8_t mode_a, uint8_t mode_b){
+	DAC_data[0] = MODE_TO_DACFLAGS(mode_a) << 4;
+	DAC_data[2] = (DACFLAG_CHANNEL | MODE_TO_DACFLAGS(mode_b)) << 4;
 }
 
 /// Begin a non-blocking DAC write of the data from an OUT_Sample

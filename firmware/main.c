@@ -43,6 +43,7 @@ void readADC(IN_sample* const s){
 
 uint8_t sampleIndex = 0; // Sample index within packet to be written next
 bool havePacket = 0;
+uint8_t sampleFlags = 0;
 IN_packet *inPacket;
 OUT_packet *outPacket;
 
@@ -51,6 +52,7 @@ void configureSampling(uint16_t mode, uint16_t period){
 	TCC0.CTRLA = 0;
 	sampleIndex = 0;
 	havePacket = 0;
+	sampleFlags = 0;
 	
 	if (mode == 1 && period > 80){
 		packetbuf_endpoint_init(); // clear buffers
@@ -72,10 +74,11 @@ ISR(TCC0_OVF_vect){
 			havePacket = 1;
 			inPacket = (IN_packet *) packetbuf_in_write_position();
 			outPacket = (OUT_packet *) packetbuf_out_read_position();
-			DAC_config(outPacket->flags);
+			DAC_config(outPacket->mode_a, outPacket->mode_b);
 			sampleIndex = 0;
 		}else{
 			PORTR.OUTCLR = 1 << 1;
+			sampleFlags |= FLAG_PACKET_DROPPED;
 			return;
 		}
 	}
@@ -91,13 +94,14 @@ ISR(TCC0_OVF_vect){
 	if (i == 1){
 		// Just latched the 0th sample from this packet to the DAC
 		// Apply the mode for this packet
-		configChannelA(outPacket->flags.a_mode);
-		configChannelB(outPacket->flags.b_mode);
+		configChannelA(outPacket->mode_a);
+		configChannelB(outPacket->mode_b);
 	} else if (i == 5){
 		// fill header when there's nothing else going on
-		inPacket->seqno = in_seqno++;
-		inPacket->reserved[0] = in_count;
-		inPacket->reserved[1] = out_count;
+		inPacket->mode_a = outPacket->mode_a;
+		inPacket->mode_b = outPacket->mode_b;
+		inPacket->flags = sampleFlags;
+		sampleFlags = 0;
 	} else if (i >= 9){
 		sampleIndex = 0;
 		havePacket = 0;

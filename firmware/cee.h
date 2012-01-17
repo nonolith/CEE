@@ -21,6 +21,8 @@ typedef enum chan_mode{
 #define A 0
 #define B 1
 
+#define FLAG_PACKET_DROPPED (1<<0)
+
 void configChannelA(chan_mode state);
 void configChannelB(chan_mode state);
 
@@ -30,9 +32,10 @@ typedef struct IN_sample{
 } IN_sample;
 
 typedef struct IN_packet{
-	unsigned char seqno;
-	unsigned char flags;
-	unsigned char reserved[2];
+	uint8_t mode_a;
+	uint8_t mode_b;
+	uint8_t flags;
+	uint8_t mode_seq;
 	IN_sample data[10];	
 } __attribute__((packed)) IN_packet;
 
@@ -40,17 +43,9 @@ typedef struct OUT_sample{
 	uint8_t al, bl, bh_ah;
 } __attribute__((packed)) OUT_sample;
 
-
-typedef struct OUT_flags{
-	chan_mode a_mode:2;
-	unsigned  a_reserved:2;
-	chan_mode b_mode:2;
-	unsigned  b_reserved:2;
-} __attribute__((packed)) OUT_flags;
-
 typedef struct OUT_packet{
-	unsigned char seqno;
-	OUT_flags flags;
+	uint8_t mode_a;
+	uint8_t mode_b;
 	OUT_sample data[10];
 } __attribute__((packed)) OUT_packet;
 
