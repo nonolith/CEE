@@ -1,7 +1,7 @@
 This repository contains the schematics and hardware design files. There are several related repositories:
 
   * [cee-firmware, the source code for the firmware running on the Atmel XMEGA32A4U](https://github.com/nonolith/cee-firmware)
-  * [dataserver, the USB to websocket bridge and data streaming layer](https://github.com/nonolith/dataserver)
+  * [nonolith-connect, the USB to websocket bridge and data streaming layer](https://github.com/nonolith/connect)
   * [pixelpulse, the web-based user interface](https://github.com/nonolith/pixelpulse)
 
 # About CEE
