@@ -14,7 +14,7 @@ def unpackSign(n):
 
 class CEE(object):
 	def __init__(self):
-		self.dev = usb.core.find(idVendor=0x9999, idProduct=0xffff) #VID and PID will change before we ship
+		self.dev = usb.core.find(idVendor=0x59e3, idProduct=0xcee1)
 		self.gains = 4*[1] # set all gains to 1
 		self.setGain(0, self.gains[0])
 		self.setGain(1, self.gains[1])
