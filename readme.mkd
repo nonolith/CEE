@@ -24,4 +24,4 @@ The CEE (control · experiment · explore) is an analog multitool. By sourcing a
 
 Development is ongoing.
 
-All schematics and board layouts for this project are released under a [Creative Commons BY-NC-SA license](http://creativecommons.org/licenses/by-nc-sa/3.0/).
+All schematics and board layouts for this project are released under a [Creative Commons BY-SA license](http://creativecommons.org/licenses/by-sa/3.0/).
