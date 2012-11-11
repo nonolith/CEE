@@ -136,8 +136,8 @@
 <text x="2.2606" y="10.8204" size="0.889" layer="25" font="vector" ratio="12" rot="R90">EXPANSION</text>
 <text x="36.0238" y="55.482" size="0.889" layer="25" font="vector" ratio="12">OPA-A</text>
 <text x="32.2072" y="2.54" size="1.27" layer="25" font="vector" ratio="12">Nonolith Labs</text>
-<text x="20.32" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">B</text>
-<text x="30.48" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">A</text>
+<text x="20.32" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">B</text>
+<text x="30.48" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">A</text>
 <text x="14.859" y="49.784" size="0.8128" layer="21" rot="R90">EXT</text>
 <text x="15.0114" y="43.7388" size="0.8128" layer="21" rot="R90">USB</text>
 <text x="14.9098" y="46.863" size="0.8128" layer="21" rot="R90">GND</text>
@@ -151,10 +151,10 @@
 <text x="5.08" y="18.288" size="0.762" layer="25" font="vector" ratio="11" rot="R180">chA</text>
 <text x="5.08" y="11.176" size="0.762" layer="25" font="vector" ratio="11" rot="R180">GND</text>
 <text x="7.366" y="11.176" size="0.762" layer="25" font="vector" ratio="11" rot="R180">5v</text>
-<text x="13.335" y="2.54" size="1.016" layer="25" font="vector" ratio="12">1.0</text>
-<text x="22.86" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
-<text x="25.4" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">5</text>
-<text x="27.94" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
+<text x="14.335" y="2.54" size="1.016" layer="25" font="vector" ratio="12" align="center">2.0 beta 1</text>
+<text x="22.86" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
+<text x="25.4" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">5</text>
+<text x="27.94" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
 <text x="9.906" y="11.176" size="0.762" layer="25" font="vector" ratio="11" rot="R180">GND</text>
 </plain>
 <libraries>
@@ -6462,12 +6462,12 @@ design rules under a new name.</description>
 <element name="RN2" library="nonolith" package="RN8P-4R-CRA06S" value="10ko" x="12" y="65" smashed="yes" rot="R270">
 <attribute name="NAME" x="14" y="67" size="0.889" layer="25" font="vector" ratio="12" rot="R270"/>
 </element>
-<element name="JP5" library="nonolith" package="1X05_ROUND" value="" x="25" y="73" smashed="yes" rot="R180">
-<attribute name="NAME" x="23.1838" y="74.7928" size="1.27" layer="25" ratio="10"/>
-<attribute name="VALUE" x="31.35" y="76.175" size="1.27" layer="27" rot="R180"/>
+<element name="JP5" library="nonolith" package="1X05_ROUND" value="" x="25" y="72" smashed="yes" rot="R180">
+<attribute name="NAME" x="23.1838" y="73.7928" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="31.35" y="75.175" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="R5" library="nonolith" package="1206" value="15o" x="25" y="66" smashed="yes" rot="R90">
-<attribute name="NAME" x="26.9558" y="64.73" size="0.762" layer="25" font="vector" ratio="10" rot="R90"/>
+<element name="R5" library="nonolith" package="1206" value="15o" x="25" y="65" smashed="yes" rot="R90">
+<attribute name="NAME" x="26.9558" y="63.73" size="0.762" layer="25" font="vector" ratio="10" rot="R90"/>
 </element>
 <element name="CN1" library="nonolith" package="USB-MICROB" value="" x="25" y="1.524"/>
 <element name="LED2" library="nonolith" package="RGBLED_PLCC6" value="" x="25" y="11" rot="R270"/>
@@ -6722,8 +6722,8 @@ design rules under a new name.</description>
 <contactref element="RN2" pad="2"/>
 <contactref element="RN2" pad="1"/>
 <contactref element="JP5" pad="1"/>
-<wire x1="31.6" y1="66" x2="30.08" y2="73" width="0" layer="19" extent="1-1"/>
-<wire x1="11.025" y1="66.295" x2="30.08" y2="73" width="0" layer="19" extent="1-1"/>
+<wire x1="31.6" y1="66" x2="30.08" y2="72" width="0" layer="19" extent="1-1"/>
+<wire x1="11.025" y1="66.295" x2="30.08" y2="72" width="0" layer="19" extent="1-1"/>
 <wire x1="11.025" y1="65.4" x2="11.025" y2="66.295" width="0" layer="19" extent="1-1"/>
 <wire x1="3.997" y1="15.718" x2="11.025" y2="65.4" width="0" layer="19" extent="1-1"/>
 </signal>
@@ -6787,7 +6787,7 @@ design rules under a new name.</description>
 <contactref element="EXPANSION" pad="6"/>
 <contactref element="RN2" pad="3"/>
 <contactref element="JP5" pad="5"/>
-<wire x1="11.025" y1="64.6" x2="19.92" y2="73" width="0" layer="19" extent="1-1"/>
+<wire x1="11.025" y1="64.6" x2="19.92" y2="72" width="0" layer="19" extent="1-1"/>
 <wire x1="9.077" y1="15.718" x2="11.025" y2="64.6" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="EN-OPA-A">
@@ -6853,7 +6853,7 @@ design rules under a new name.</description>
 <wire x1="40.285" y1="61.04" x2="38.96" y2="62.365" width="0" layer="19" extent="1-1"/>
 <wire x1="43.2052" y1="62.165" x2="40.285" y2="61.04" width="0" layer="19" extent="1-1"/>
 <wire x1="46.542" y1="60.4187" x2="43.2052" y2="62.165" width="0" layer="19" extent="1-1"/>
-<wire x1="25" y1="64.6" x2="38.96" y2="62.365" width="0" layer="19" extent="1-1"/>
+<wire x1="25" y1="63.6" x2="38.96" y2="62.365" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BOOTLOAD">
 <contactref element="PROG" pad="4"/>
@@ -6931,7 +6931,7 @@ design rules under a new name.</description>
 <signal name="5V-EXT-P">
 <contactref element="JP5" pad="3"/>
 <contactref element="R5" pad="2"/>
-<wire x1="25" y1="67.4" x2="25" y2="73" width="0" layer="19" extent="1-1"/>
+<wire x1="25" y1="66.4" x2="25" y2="72" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$3">
 <contactref element="IC1" pad="27"/>
