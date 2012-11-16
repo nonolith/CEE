@@ -2564,11 +2564,6 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="C19" gate="G$1" pin="P$2"/>
 </segment>
 <segment>
-<wire x1="203.2" y1="53.34" x2="195.58" y2="53.34" width="0" layer="91"/>
-<label x="195.58" y="53.34" size="1.778" layer="95" rot="R180"/>
-<pinref part="EXPANSION" gate="A" pin="5"/>
-</segment>
-<segment>
 <wire x1="213.36" y1="71.12" x2="218.44" y2="71.12" width="0" layer="91"/>
 <label x="218.44" y="71.12" size="1.778" layer="95"/>
 <pinref part="PROG" gate="G$1" pin="GND"/>
@@ -2596,6 +2591,16 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="-40.64" y1="33.02" x2="-40.64" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="U$7" gate="G$1" pin="GND"/>
 <junction x="-40.64" y="30.48"/>
+</segment>
+<segment>
+<pinref part="EXPANSION" gate="A" pin="2"/>
+<wire x1="210.82" y1="58.42" x2="218.44" y2="58.42" width="0.1524" layer="91"/>
+<label x="218.44" y="58.42" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="EXPANSION" gate="A" pin="6"/>
+<wire x1="210.82" y1="53.34" x2="218.44" y2="53.34" width="0.1524" layer="91"/>
+<label x="218.44" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PDI-DATA" class="0">
@@ -2974,6 +2979,18 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="IC1" gate="G$1" pin="PC6/MISO/RXD1"/>
 <wire x1="96.52" y1="58.42" x2="99.06" y2="58.42" width="0.1524" layer="91"/>
 <label x="99.06" y="58.42" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="EXP5" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="XCK1/MOSI/PD5"/>
+<wire x1="35.56" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
+<label x="27.94" y="17.78" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="EXPANSION" gate="A" pin="5"/>
+<wire x1="203.2" y1="53.34" x2="195.58" y2="53.34" width="0.1524" layer="91"/>
+<label x="195.58" y="53.34" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 </nets>
