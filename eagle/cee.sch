@@ -2928,6 +2928,18 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <label x="101.6" y="38.1" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="TFLAG-P" class="0">
+<segment>
+<pinref part="R4" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="96.52" x2="50.8" y2="96.52" width="0" layer="91"/>
+<label x="50.8" y="96.52" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="PB1/ADC9"/>
+<wire x1="96.52" y1="33.02" x2="101.6" y2="33.02" width="0" layer="91"/>
+<label x="101.6" y="33.02" size="1.778" layer="95"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
