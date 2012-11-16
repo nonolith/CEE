@@ -522,17 +522,18 @@ package type OT</description>
 </package>
 <package name="SC-70">
 <description>tiny sot23</description>
-<smd name="P6" x="-0.65" y="0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<smd name="P5" x="0" y="0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<smd name="P4" x="0.65" y="0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<smd name="P1" x="-0.65" y="-0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<smd name="P2" x="0" y="-0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<smd name="P3" x="0.65" y="-0.625" dx="0.4" dy="0.325" layer="1" rot="R90"/>
-<wire x1="-1.27" y1="0.635" x2="1.27" y2="0.635" width="0.4064" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.4064" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="-1.27" y2="-0.635" width="0.4064" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-1.27" y2="0.635" width="0.4064" layer="21"/>
-<wire x1="-1.27" y1="-1.27" x2="-0.635" y2="-1.27" width="0.4064" layer="21"/>
+<smd name="P6" x="-0.65" y="1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<smd name="P5" x="0" y="1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<smd name="P4" x="0.65" y="1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<smd name="P1" x="-0.65" y="-1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<smd name="P2" x="0" y="-1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<smd name="P3" x="0.65" y="-1.1" dx="0.9" dy="0.4" layer="1" rot="R90"/>
+<wire x1="-1.075" y1="0.7" x2="1.075" y2="0.7" width="0.4064" layer="21"/>
+<wire x1="1.075" y1="0.7" x2="1.075" y2="-0.7" width="0.4064" layer="21"/>
+<wire x1="1.075" y1="-0.7" x2="-1.075" y2="-0.7" width="0.4064" layer="21"/>
+<wire x1="-1.075" y1="-0.7" x2="-1.075" y2="0.7" width="0.4064" layer="21"/>
+<circle x="-1.67" y="-1.37" radius="0.254" width="0" layer="21"/>
+<text x="-1.67" y="1.97" size="0.762" layer="25">&gt;NAME</text>
 </package>
 <package name="SOT23-6">
 <description>&lt;b&gt;Small Outline Transistor&lt;/b&gt; 6 lead</description>
@@ -614,10 +615,10 @@ package type OT</description>
 <wire x1="-2.54" y1="-2.54" x2="-1.54" y2="-2.54" width="0.2032" layer="21"/>
 <wire x1="2.46" y1="-2.54" x2="1.46" y2="-2.54" width="0.2032" layer="21"/>
 <wire x1="-2.54" y1="1.46" x2="-1.54" y2="2.46" width="0.2032" layer="21"/>
-<pad name="P$2" x="-0.786" y="0.706" drill="0.3302"/>
-<pad name="P$4" x="0.706" y="0.706" drill="0.3302"/>
-<pad name="P$6" x="-0.786" y="-0.786" drill="0.3302"/>
-<pad name="P$7" x="0.706" y="-0.786" drill="0.3302"/>
+<pad name="P$2" x="-0.786" y="0.706" drill="0.3302" thermals="no"/>
+<pad name="P$4" x="0.706" y="0.706" drill="0.3302" thermals="no"/>
+<pad name="P$6" x="-0.786" y="-0.786" drill="0.3302" thermals="no"/>
+<pad name="P$7" x="0.706" y="-0.786" drill="0.3302" thermals="no"/>
 <smd name="P$1" x="-0.04" y="-0.04" dx="3.12" dy="3.12" layer="1"/>
 <smd name="9" x="2.285" y="0.96" dx="0.75" dy="0.24" layer="1"/>
 <smd name="7" x="2.285" y="-1.04" dx="0.75" dy="0.24" layer="1"/>
@@ -1898,7 +1899,7 @@ TI Current Sense Amplifier</description>
 <connect gate="G$1" pin="V+@1" pad="1"/>
 <connect gate="G$1" pin="V+@12" pad="12"/>
 <connect gate="G$1" pin="V-@4" pad="4"/>
-<connect gate="G$1" pin="V-@5" pad="5"/>
+<connect gate="G$1" pin="V-@5" pad="5 P$2 P$4 P$6 P$7"/>
 <connect gate="G$1" pin="VIN+" pad="9"/>
 <connect gate="G$1" pin="VIN-" pad="8"/>
 <connect gate="G$1" pin="VO@2" pad="2"/>
