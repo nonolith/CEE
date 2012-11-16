@@ -6797,6 +6797,7 @@ design rules under a new name.</description>
 <contactref element="OPA-A" pad="P$7"/>
 <contactref element="EXPANSION" pad="2"/>
 <contactref element="EXPANSION" pad="6"/>
+<contactref element="OPA-A" pad="P$1"/>
 </signal>
 <signal name="PDI-DATA">
 <contactref element="IC1" pad="34"/>
@@ -7524,12 +7525,6 @@ design rules under a new name.</description>
 <wire x1="9.077" y1="13.077" x2="9" y2="13" width="0.254" layer="1"/>
 </signal>
 </signals>
-<errors>
-<approved hash="19,1,4644dc46dc354637"/>
-<approved hash="19,1,4a44d046dd154717"/>
-<approved hash="19,1,0a4130433d1b0719"/>
-<approved hash="19,1,06413c433c3b0639"/>
-</errors>
 </board>
 </drawing>
 </eagle>

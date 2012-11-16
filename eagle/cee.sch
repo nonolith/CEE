@@ -1899,7 +1899,7 @@ TI Current Sense Amplifier</description>
 <connect gate="G$1" pin="V+@1" pad="1"/>
 <connect gate="G$1" pin="V+@12" pad="12"/>
 <connect gate="G$1" pin="V-@4" pad="4"/>
-<connect gate="G$1" pin="V-@5" pad="5 P$2 P$4 P$6 P$7"/>
+<connect gate="G$1" pin="V-@5" pad="5 P$1 P$2 P$4 P$6 P$7"/>
 <connect gate="G$1" pin="VIN+" pad="9"/>
 <connect gate="G$1" pin="VIN-" pad="8"/>
 <connect gate="G$1" pin="VO@2" pad="2"/>
