@@ -963,36 +963,31 @@ Epson Toyocom FCC-255</description>
 <rectangle x1="-4.445" y1="-0.635" x2="-2.54" y2="0.635" layer="21"/>
 <rectangle x1="2.54" y1="-0.635" x2="4.445" y2="0.635" layer="21"/>
 </package>
-<package name="SO-08">
-<wire x1="2.54" y1="1.1938" x2="1.778" y2="1.9558" width="0.1524" layer="21" curve="90"/>
-<wire x1="1.778" y1="1.9558" x2="-1.778" y2="1.9558" width="0.1524" layer="21"/>
-<wire x1="-1.778" y1="1.9558" x2="-2.54" y2="1.1938" width="0.1524" layer="21" curve="90"/>
-<wire x1="-2.54" y1="1.1938" x2="-2.54" y2="0.508" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="0.508" x2="-2.54" y2="-0.508" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="-0.508" x2="-2.54" y2="-1.1938" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="-1.1938" x2="-1.778" y2="-1.9558" width="0.1524" layer="21" curve="90"/>
-<wire x1="-1.778" y1="-1.9558" x2="1.778" y2="-1.9558" width="0.1524" layer="21"/>
-<wire x1="1.778" y1="-1.9558" x2="2.54" y2="-1.1938" width="0.1524" layer="21" curve="90"/>
-<wire x1="2.54" y1="-1.1938" x2="2.54" y2="1.1938" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="0.508" x2="-2.54" y2="-0.508" width="0.1524" layer="21" curve="-180"/>
-<smd name="1" x="-1.905" y="-3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="8" x="-1.905" y="3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="2" x="-0.635" y="-3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="3" x="0.635" y="-3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="7" x="-0.635" y="3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="6" x="0.635" y="3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="4" x="1.905" y="-3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<smd name="5" x="1.905" y="3.0734" dx="0.6604" dy="2.032" layer="1"/>
-<text x="3.937" y="-2.032" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<text x="-2.921" y="-1.905" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
-<rectangle x1="1.651" y1="1.9558" x2="2.159" y2="3.0988" layer="51"/>
-<rectangle x1="-2.159" y1="-3.0988" x2="-1.651" y2="-1.9558" layer="51"/>
-<rectangle x1="-0.889" y1="-3.0988" x2="-0.381" y2="-1.9558" layer="51"/>
-<rectangle x1="0.381" y1="-3.0734" x2="0.889" y2="-1.9304" layer="51"/>
-<rectangle x1="1.651" y1="-3.0988" x2="2.159" y2="-1.9558" layer="51"/>
-<rectangle x1="0.381" y1="1.9558" x2="0.889" y2="3.0988" layer="51"/>
-<rectangle x1="-0.889" y1="1.9558" x2="-0.381" y2="3.0988" layer="51"/>
-<rectangle x1="-2.159" y1="1.9558" x2="-1.651" y2="3.0988" layer="51"/>
+<package name="MSOP8">
+<description>&lt;b&gt;Micro Small Outline Package&lt;/b&gt;</description>
+<wire x1="-1.4" y1="1.4" x2="1.4" y2="1.4" width="0.2032" layer="21"/>
+<wire x1="1.4" y1="1.4" x2="1.4" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="1.4" y1="-1.4" x2="-1.4" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="-1.4" y1="-1.4" x2="-1.4" y2="1.4" width="0.2032" layer="21"/>
+<circle x="-1" y="-1" radius="0.2" width="0" layer="21"/>
+<smd name="1" x="-0.975" y="-2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="2" x="-0.325" y="-2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="3" x="0.325" y="-2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="4" x="0.975" y="-2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="5" x="0.975" y="2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="6" x="0.325" y="2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="7" x="-0.325" y="2.05" dx="0.45" dy="1.2" layer="1"/>
+<smd name="8" x="-0.975" y="2.05" dx="0.45" dy="1.2" layer="1"/>
+<text x="-1.1941" y="0.7416" size="0.4064" layer="25">&gt;NAME</text>
+<text x="-1.1956" y="0.0136" size="0.3048" layer="27">&gt;VALUE</text>
+<rectangle x1="-1.1254" y1="-2.45" x2="-0.8254" y2="-1.5" layer="51"/>
+<rectangle x1="-0.4751" y1="-2.45" x2="-0.1751" y2="-1.5" layer="51"/>
+<rectangle x1="0.1751" y1="-2.45" x2="0.4751" y2="-1.5" layer="51"/>
+<rectangle x1="0.8253" y1="-2.45" x2="1.1253" y2="-1.5" layer="51"/>
+<rectangle x1="0.8254" y1="1.5" x2="1.1254" y2="2.45" layer="51"/>
+<rectangle x1="0.1751" y1="1.5" x2="0.4751" y2="2.45" layer="51"/>
+<rectangle x1="-0.4751" y1="1.5" x2="-0.1751" y2="2.45" layer="51"/>
+<rectangle x1="-1.1253" y1="1.5" x2="-0.8253" y2="2.45" layer="51"/>
 </package>
 </packages>
 <symbols>
@@ -2093,7 +2088,7 @@ TI Current Sense Amplifier</description>
 <gate name="G$3" symbol="PWR+-" x="12.7" y="10.16"/>
 </gates>
 <devices>
-<device name="" package="SO-08">
+<device name="" package="MSOP8">
 <connects>
 <connect gate="G$1" pin="+IN" pad="3"/>
 <connect gate="G$1" pin="-IN" pad="2"/>
