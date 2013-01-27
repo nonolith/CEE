@@ -2693,6 +2693,11 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="210.82" y1="53.34" x2="218.44" y2="53.34" width="0.254" layer="91"/>
 <label x="218.44" y="53.34" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="EXPANSION" gate="A" pin="5"/>
+<wire x1="203.2" y1="53.34" x2="195.58" y2="53.34" width="0.254" layer="91"/>
+<label x="195.58" y="53.34" size="1.778" layer="95" rot="R180"/>
+</segment>
 </net>
 <net name="PDI-DATA" class="0">
 <segment>
@@ -2819,38 +2824,26 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 </net>
 <net name="EXP3" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="OC0D/TXD0/PD3"/>
-<wire x1="35.56" y1="12.7" x2="27.94" y2="12.7" width="0.254" layer="91"/>
-<label x="27.94" y="12.7" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="EXPANSION" gate="A" pin="7"/>
 <wire x1="203.2" y1="50.8" x2="195.58" y2="50.8" width="0.254" layer="91"/>
 <label x="195.58" y="50.8" size="1.778" layer="95" rot="R180"/>
 </segment>
-</net>
-<net name="EXP2" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="OC0C/RXD0/PD2"/>
-<wire x1="35.56" y1="10.16" x2="27.94" y2="10.16" width="0.254" layer="91"/>
-<label x="27.94" y="10.16" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="EXPANSION" gate="A" pin="10"/>
-<wire x1="210.82" y1="48.26" x2="218.44" y2="48.26" width="0.254" layer="91"/>
-<label x="218.44" y="48.26" size="1.778" layer="95"/>
+<pinref part="IC1" gate="G$1" pin="SS/PD4"/>
+<wire x1="35.56" y1="15.24" x2="27.94" y2="15.24" width="0.254" layer="91"/>
+<label x="27.94" y="15.24" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="EXP1" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="OC0B/XCK0/PD1"/>
-<wire x1="35.56" y1="7.62" x2="27.94" y2="7.62" width="0.254" layer="91"/>
-<label x="27.94" y="7.62" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="EXPANSION" gate="A" pin="8"/>
 <wire x1="210.82" y1="50.8" x2="218.44" y2="50.8" width="0.254" layer="91"/>
 <label x="218.44" y="50.8" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="OC0C/RXD0/PD2"/>
+<wire x1="35.56" y1="10.16" x2="27.94" y2="10.16" width="0.254" layer="91"/>
+<label x="27.94" y="10.16" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="DAC-SHDN" class="0">
@@ -3012,14 +3005,14 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 </net>
 <net name="EXP4" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="SS/PD4"/>
-<wire x1="35.56" y1="15.24" x2="27.94" y2="15.24" width="0.254" layer="91"/>
-<label x="27.94" y="15.24" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="EXPANSION" gate="A" pin="9"/>
 <wire x1="203.2" y1="48.26" x2="195.58" y2="48.26" width="0.254" layer="91"/>
 <label x="195.58" y="48.26" size="1.778" layer="95" rot="R180"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="XCK1/MOSI/PD5"/>
+<wire x1="35.56" y1="17.78" x2="27.94" y2="17.78" width="0.254" layer="91"/>
+<label x="27.94" y="17.78" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CSA-VREF" class="0">
@@ -3074,23 +3067,30 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <label x="99.06" y="58.42" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="EXP5" class="0">
-<segment>
-<pinref part="IC1" gate="G$1" pin="XCK1/MOSI/PD5"/>
-<wire x1="35.56" y1="17.78" x2="27.94" y2="17.78" width="0.254" layer="91"/>
-<label x="27.94" y="17.78" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="EXPANSION" gate="A" pin="5"/>
-<wire x1="203.2" y1="53.34" x2="195.58" y2="53.34" width="0.254" layer="91"/>
-<label x="195.58" y="53.34" size="1.778" layer="95" rot="R180"/>
-</segment>
-</net>
 <net name="2.5DIV" class="0">
 <segment>
 <pinref part="IC1" gate="G$1" pin="PA5/ADC5"/>
 <wire x1="96.52" y1="17.78" x2="101.6" y2="17.78" width="0.254" layer="91"/>
 <label x="101.6" y="17.78" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="CSA-EN" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="OC0B/XCK0/PD1"/>
+<wire x1="35.56" y1="7.62" x2="27.94" y2="7.62" width="0.254" layer="91"/>
+<label x="20.32" y="7.62" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="EXP2" class="0">
+<segment>
+<pinref part="IC1" gate="G$1" pin="OC0D/TXD0/PD3"/>
+<wire x1="35.56" y1="12.7" x2="27.94" y2="12.7" width="0.254" layer="91"/>
+<label x="27.94" y="12.7" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="EXPANSION" gate="A" pin="10"/>
+<wire x1="210.82" y1="48.26" x2="218.44" y2="48.26" width="0.254" layer="91"/>
+<label x="218.44" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
@@ -3616,7 +3616,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <label x="109.22" y="91.44" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
-<net name="EN-CSA" class="0">
+<net name="CSA-EN" class="0">
 <segment>
 <pinref part="U$13" gate="G$1" pin="EN/CAL"/>
 <wire x1="20.32" y1="68.58" x2="17.78" y2="68.58" width="0.254" layer="91"/>
