@@ -2774,7 +2774,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <label x="165.1" y="73.66" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="VOUT-B" class="0">
+<net name="ADCREF" class="0">
 <segment>
 <wire x1="160.02" y1="53.34" x2="165.1" y2="53.34" width="0.254" layer="91"/>
 <pinref part="DAC" gate="G$1" pin="VOUTB"/>
