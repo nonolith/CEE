@@ -2520,7 +2520,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <instance part="Y1" gate="G$1" x="96.52" y="7.62" rot="MR90"/>
 <instance part="C9" gate="G$1" x="88.9" y="5.08" rot="R270"/>
 <instance part="C11" gate="G$1" x="88.9" y="10.16" rot="R270"/>
-<instance part="U$6" gate="G$1" x="86.36" y="12.7" rot="R180"/>
+<instance part="U$6" gate="G$1" x="86.36" y="2.54"/>
 <instance part="R1" gate="G$1" x="167.64" y="48.26" rot="R180"/>
 <instance part="R3" gate="G$1" x="167.64" y="50.8" rot="R180"/>
 <instance part="R6" gate="G$1" x="167.64" y="53.34" rot="R180"/>
@@ -2621,6 +2621,11 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="25.4" y1="180.34" x2="27.94" y2="180.34" width="0.254" layer="91"/>
 <pinref part="DAC" gate="G$1" pin="CS"/>
 <label x="25.4" y="180.34" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="PC3/OC0D/TXD0"/>
+<wire x1="99.06" y1="33.02" x2="96.52" y2="33.02" width="0.254" layer="91"/>
+<label x="96.52" y="33.02" size="1.27" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SCK" class="0">
@@ -2782,6 +2787,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="C11" gate="G$1" pin="P$2"/>
 <pinref part="U$6" gate="G$1" pin="GND"/>
 <pinref part="C9" gate="G$1" pin="P$2"/>
+<junction x="86.36" y="5.08"/>
 <wire x1="86.36" y1="5.08" x2="86.36" y2="10.16" width="0.254" layer="91"/>
 </segment>
 <segment>
