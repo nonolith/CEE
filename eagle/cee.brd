@@ -6683,8 +6683,6 @@ design rules under a new name.</description>
 <wire x1="6.1088" y1="38" x2="9.1088" y2="35" width="0.254" layer="16"/>
 <wire x1="9.1088" y1="35" x2="11" y2="35" width="0.254" layer="16"/>
 <wire x1="11" y1="35" x2="13" y2="33" width="0.254" layer="16"/>
-<contactref element="C17" pad="2"/>
-<wire x1="13.85" y1="49.25" x2="14" y2="49.1" width="0.254" layer="1"/>
 <wire x1="14" y1="49.1" x2="14" y2="49" width="0.254" layer="1"/>
 <wire x1="34.5" y1="59.5" x2="37" y2="57" width="0.254" layer="16"/>
 <wire x1="37" y1="57" x2="37" y2="56" width="0.254" layer="16"/>
@@ -6709,6 +6707,8 @@ design rules under a new name.</description>
 <wire x1="32.952" y1="60.548" x2="33" y2="60.5" width="0.254" layer="1"/>
 <wire x1="32.75" y1="60.75" x2="32.75" y2="60.803" width="0.254" layer="1"/>
 <wire x1="32.75" y1="60.803" x2="32.952" y2="61.005" width="0.254" layer="1"/>
+<contactref element="C17" pad="2"/>
+<wire x1="13.85" y1="49.25" x2="14" y2="49.1" width="0.254" layer="1"/>
 </signal>
 <signal name="GND">
 <contactref element="EXPANSION" pad="1"/>
@@ -6800,7 +6800,6 @@ design rules under a new name.</description>
 <via x="10" y="34" extent="1-16" drill="0.305"/>
 <via x="18.25" y="42.5" extent="1-16" drill="0.305"/>
 <via x="20.75" y="42.5" extent="1-16" drill="0.305"/>
-<contactref element="C17" pad="1"/>
 <via x="33.75" y="58.5" extent="1-16" drill="0.305"/>
 <via x="34.5" y="58.25" extent="1-16" drill="0.305"/>
 <via x="16.5" y="43.5" extent="1-16" drill="0.305"/>
@@ -6850,6 +6849,7 @@ design rules under a new name.</description>
 <wire x1="31" y1="36.5" x2="31" y2="38.5" width="0.254" layer="1"/>
 <wire x1="31" y1="38.5" x2="27" y2="42.5" width="0.254" layer="1"/>
 <contactref element="EXPANSION" pad="5"/>
+<contactref element="C17" pad="1"/>
 </signal>
 <signal name="PDI-DATA">
 <contactref element="IC1" pad="34"/>
@@ -7507,10 +7507,8 @@ design rules under a new name.</description>
 </signal>
 <signal name="2.5VOUT">
 <contactref element="R5" pad="2"/>
-<contactref element="JP5" pad="3"/>
 <contactref element="R13" pad="2"/>
 <contactref element="U$12" pad="3"/>
-<wire x1="25" y1="72" x2="25" y2="67.5" width="0.762" layer="1"/>
 <wire x1="25" y1="67.5" x2="22.5" y2="65" width="0.762" layer="1"/>
 <wire x1="22.5" y1="65" x2="21.5" y2="65" width="0.762" layer="1"/>
 <wire x1="21.5" y1="65" x2="21.4" y2="65" width="0.762" layer="1"/>
@@ -7535,6 +7533,8 @@ design rules under a new name.</description>
 <wire x1="20" y1="58.075" x2="19.9" y2="57.975" width="0.254" layer="1"/>
 <wire x1="21.5" y1="63" x2="20" y2="61.5" width="0.254" layer="16"/>
 <wire x1="20" y1="61.5" x2="20" y2="59.5" width="0.254" layer="16"/>
+<contactref element="JP5" pad="3"/>
+<wire x1="25" y1="67.5" x2="25" y2="72" width="0.762" layer="1"/>
 </signal>
 <signal name="2.5VFDBK">
 <contactref element="U$12" pad="7"/>
@@ -7570,9 +7570,10 @@ design rules under a new name.</description>
 <wire x1="19.15" y1="27.5" x2="19.25" y2="27.4" width="0.254" layer="1"/>
 <wire x1="35.25" y1="41" x2="33.5" y2="41" width="0.254" layer="16"/>
 <wire x1="33.5" y1="41" x2="25" y2="32.5" width="0.254" layer="16"/>
-<wire x1="35.25" y1="41" x2="35.85" y2="41" width="0.254" layer="1"/>
+<wire x1="35.25" y1="41" x2="36" y2="41" width="0.254" layer="1"/>
 <contactref element="R4" pad="2"/>
-<wire x1="35.85" y1="41" x2="37" y2="42.15" width="0" layer="19" extent="1-1"/>
+<wire x1="36" y1="41" x2="37" y2="42" width="0.254" layer="1"/>
+<wire x1="37" y1="42" x2="37" y2="42.15" width="0.254" layer="1"/>
 </signal>
 <signal name="IFLAG-A">
 <contactref element="OPA-A" pad="7"/>
