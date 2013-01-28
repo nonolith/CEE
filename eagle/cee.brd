@@ -146,7 +146,7 @@
 <text x="6.537" y="17.5" size="0.762" layer="25" font="vector" ratio="11" rot="R180" align="top-center">3v3</text>
 <text x="3.997" y="11.25" size="0.762" layer="25" font="vector" ratio="11" rot="R180" align="bottom-center">GND</text>
 <text x="6.537" y="11.25" size="0.762" layer="25" font="vector" ratio="11" rot="R180" align="bottom-center">5v</text>
-<text x="14.335" y="2.54" size="1.016" layer="25" font="vector" ratio="12" align="center">2.0 beta 1</text>
+<text x="14.335" y="2.54" size="1.016" layer="25" font="vector" ratio="12" align="center">2.0 beta 2</text>
 <text x="22.36" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">5</text>
 <text x="26.4" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">2.5</text>
 <text x="28.44" y="70" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
