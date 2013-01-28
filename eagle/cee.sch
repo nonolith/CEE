@@ -1061,6 +1061,34 @@ TS-003</description>
 <rectangle x1="-0.889" y1="1.9558" x2="-0.381" y2="3.0988" layer="51"/>
 <rectangle x1="-2.159" y1="1.9558" x2="-1.651" y2="3.0988" layer="51"/>
 </package>
+<package name="HEADER_PRG_2X03">
+<wire x1="-3.81" y1="-2.54" x2="-3.81" y2="0" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="0" x2="-3.81" y2="2.54" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="2.54" x2="3.81" y2="2.54" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="2.54" x2="3.81" y2="-2.54" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="-2.54" x2="-1.27" y2="-2.54" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-2.54" x2="-3.81" y2="-2.54" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="0" x2="-1.27" y2="0" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-2.54" x2="-1.27" y2="0" width="0.1524" layer="21"/>
+<pad name="1" x="-2.54" y="-1.27" drill="1.016" shape="square"/>
+<pad name="2" x="-2.54" y="1.27" drill="1.016"/>
+<pad name="3" x="0" y="-1.27" drill="1.016"/>
+<pad name="4" x="0" y="1.27" drill="1.016"/>
+<pad name="5" x="2.54" y="-1.27" drill="1.016"/>
+<pad name="6" x="2.54" y="1.27" drill="1.016" first="yes"/>
+<text x="-3.81" y="2.8575" size="1.27" layer="25" font="vector" ratio="10">&gt;NAME</text>
+<rectangle x1="2.286" y1="1.016" x2="2.794" y2="1.524" layer="48"/>
+<rectangle x1="2.286" y1="-1.524" x2="2.794" y2="-1.016" layer="48"/>
+<rectangle x1="-0.254" y1="1.016" x2="0.254" y2="1.524" layer="48"/>
+<rectangle x1="-0.254" y1="-1.524" x2="0.254" y2="-1.016" layer="48"/>
+<rectangle x1="-2.794" y1="1.016" x2="-2.286" y2="1.524" layer="48"/>
+<rectangle x1="-2.794" y1="-1.524" x2="-2.286" y2="-1.016" layer="48"/>
+<polygon width="0.0634" layer="21">
+<vertex x="-2.54" y="-3.175"/>
+<vertex x="-3.175" y="-3.81"/>
+<vertex x="-1.905" y="-3.81"/>
+</polygon>
+</package>
 </packages>
 <symbols>
 <symbol name="PINH2X5">
@@ -1366,6 +1394,25 @@ TS-003</description>
 <wire x1="10.16" y1="-22.86" x2="-7.62" y2="-22.86" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="-22.86" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="-7.62" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
+</symbol>
+<symbol name="PRG_ICSP_AVR">
+<wire x1="-8.89" y1="-5.08" x2="-8.89" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="-8.89" y1="5.08" x2="8.89" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="8.89" y1="5.08" x2="8.89" y2="-5.08" width="0.4064" layer="94"/>
+<wire x1="8.89" y1="-5.08" x2="-8.89" y2="-5.08" width="0.4064" layer="94"/>
+<text x="-8.89" y="5.842" size="1.778" layer="95" font="vector">&gt;NAME</text>
+<text x="-0.254" y="3.302" size="1.27" layer="95" font="vector" ratio="12" rot="R180">MISO</text>
+<text x="-1.016" y="0.762" size="1.27" layer="95" font="vector" ratio="12" rot="R180">SCK</text>
+<text x="-1.016" y="-1.778" size="1.27" layer="95" font="vector" ratio="12" rot="R180">RST</text>
+<text x="4.826" y="3.302" size="1.27" layer="95" font="vector" ratio="12" rot="R180">+V</text>
+<text x="4.826" y="0.762" size="1.27" layer="95" font="vector" ratio="12" rot="R180">MOSI</text>
+<text x="4.826" y="-1.778" size="1.27" layer="95" font="vector" ratio="12" rot="R180">GND</text>
+<pin name="+V" x="7.62" y="2.54" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
+<pin name="MISO" x="-7.62" y="2.54" visible="pad" length="short" direction="pas" function="dot"/>
+<pin name="SCK" x="-7.62" y="0" visible="pad" length="short" direction="pas" function="dot"/>
+<pin name="RST" x="-7.62" y="-2.54" visible="pad" length="short" direction="pas" function="dot"/>
+<pin name="MOSI" x="7.62" y="0" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
+<pin name="GND" x="7.62" y="-2.54" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -2197,6 +2244,27 @@ TS-003</description>
 </device>
 </devices>
 </deviceset>
+<deviceset name="CON_HEADER_PRG_AVR_ICSP" prefix="J">
+<description>2x3 AVR ICSP programming header</description>
+<gates>
+<gate name="J" symbol="PRG_ICSP_AVR" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="HEADER_PRG_2X03">
+<connects>
+<connect gate="J" pin="+V" pad="2"/>
+<connect gate="J" pin="GND" pad="6"/>
+<connect gate="J" pin="MISO" pad="1"/>
+<connect gate="J" pin="MOSI" pad="4"/>
+<connect gate="J" pin="RST" pad="5"/>
+<connect gate="J" pin="SCK" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 <library name="SparkFun">
@@ -2318,88 +2386,6 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 </deviceset>
 </devicesets>
 </library>
-<library name="dp_devices">
-<packages>
-<package name="HEADER_PRG_2X03">
-<wire x1="-3.81" y1="-2.54" x2="-3.81" y2="0" width="0.127" layer="21"/>
-<wire x1="-3.81" y1="0" x2="-3.81" y2="2.54" width="0.127" layer="21"/>
-<wire x1="-3.81" y1="2.54" x2="3.81" y2="2.54" width="0.127" layer="21"/>
-<wire x1="3.81" y1="2.54" x2="3.81" y2="-2.54" width="0.127" layer="21"/>
-<wire x1="3.81" y1="-2.54" x2="-1.27" y2="-2.54" width="0.127" layer="21"/>
-<wire x1="-1.27" y1="-2.54" x2="-3.81" y2="-2.54" width="0.127" layer="21"/>
-<wire x1="-3.81" y1="0" x2="-1.27" y2="0" width="0.127" layer="21"/>
-<wire x1="-1.27" y1="-2.54" x2="-1.27" y2="0" width="0.127" layer="21"/>
-<pad name="1" x="-2.54" y="-1.27" drill="1.016" shape="square"/>
-<pad name="2" x="-2.54" y="1.27" drill="1.016"/>
-<pad name="3" x="0" y="-1.27" drill="1.016"/>
-<pad name="4" x="0" y="1.27" drill="1.016"/>
-<pad name="5" x="2.54" y="-1.27" drill="1.016"/>
-<pad name="6" x="2.54" y="1.27" drill="1.016" first="yes"/>
-<text x="-3.81" y="3.175" size="1.27" layer="21">&gt;NAME</text>
-<text x="0" y="-5.08" size="1.27" layer="27">&gt;VALUE</text>
-<text x="-5.08" y="-1.905" size="1.27" layer="21">1</text>
-<text x="-5.08" y="0.635" size="1.27" layer="21">2</text>
-<text x="4.445" y="-1.905" size="1.27" layer="21">5</text>
-<text x="4.445" y="0.635" size="1.27" layer="21">6</text>
-<rectangle x1="2.286" y1="1.016" x2="2.794" y2="1.524" layer="48"/>
-<rectangle x1="2.286" y1="-1.524" x2="2.794" y2="-1.016" layer="48"/>
-<rectangle x1="-0.254" y1="1.016" x2="0.254" y2="1.524" layer="48"/>
-<rectangle x1="-0.254" y1="-1.524" x2="0.254" y2="-1.016" layer="48"/>
-<rectangle x1="-2.794" y1="1.016" x2="-2.286" y2="1.524" layer="48"/>
-<rectangle x1="-2.794" y1="-1.524" x2="-2.286" y2="-1.016" layer="48"/>
-<polygon width="0.0634" layer="21">
-<vertex x="-2.54" y="-3.175"/>
-<vertex x="-3.175" y="-3.81"/>
-<vertex x="-1.905" y="-3.81"/>
-</polygon>
-</package>
-</packages>
-<symbols>
-<symbol name="AVR_ICSP">
-<wire x1="-10.16" y1="-5.08" x2="-10.16" y2="5.08" width="0.4064" layer="94"/>
-<wire x1="-10.16" y1="5.08" x2="10.16" y2="5.08" width="0.4064" layer="94"/>
-<wire x1="10.16" y1="5.08" x2="10.16" y2="-5.08" width="0.4064" layer="94"/>
-<wire x1="10.16" y1="-5.08" x2="-10.16" y2="-5.08" width="0.4064" layer="94"/>
-<text x="-10.16" y="5.842" size="1.778" layer="95">&gt;NAME</text>
-<text x="-10.16" y="-7.62" size="1.778" layer="96">&gt;VALUE</text>
-<text x="-0.254" y="3.302" size="1.27" layer="95" rot="R180">MISO</text>
-<text x="-1.016" y="0.762" size="1.27" layer="95" rot="R180">SCK</text>
-<text x="-1.016" y="-1.778" size="1.27" layer="95" rot="R180">RST</text>
-<text x="4.826" y="3.302" size="1.27" layer="95" rot="R180">+V</text>
-<text x="4.826" y="0.762" size="1.27" layer="95" rot="R180">MOSI</text>
-<text x="4.826" y="-1.778" size="1.27" layer="95" rot="R180">GND</text>
-<pin name="+V" x="7.62" y="2.54" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
-<pin name="MISO" x="-7.62" y="2.54" visible="pad" length="short" direction="pas" function="dot"/>
-<pin name="SCK" x="-7.62" y="0" visible="pad" length="short" direction="pas" function="dot"/>
-<pin name="RST" x="-7.62" y="-2.54" visible="pad" length="short" direction="pas" function="dot"/>
-<pin name="MOSI" x="7.62" y="0" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
-<pin name="GND" x="7.62" y="-2.54" visible="pad" length="short" direction="pas" function="dot" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="HEADER_PRG_AVR_ICSP" prefix="CON">
-<description>2x3 AVR ICSP programming header</description>
-<gates>
-<gate name="G$1" symbol="AVR_ICSP" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="HEADER_PRG_2X03">
-<connects>
-<connect gate="G$1" pin="+V" pad="2"/>
-<connect gate="G$1" pin="GND" pad="6"/>
-<connect gate="G$1" pin="MISO" pad="1"/>
-<connect gate="G$1" pin="MOSI" pad="4"/>
-<connect gate="G$1" pin="RST" pad="5"/>
-<connect gate="G$1" pin="SCK" pad="3"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 </libraries>
 <attributes>
 </attributes>
@@ -2425,7 +2411,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <part name="R14" library="nonolith" deviceset="RESISTOR" device="0603" value="10k"/>
 <part name="C3" library="nonolith" deviceset="CAP_CERAMIC" device="0603" value="0.1uF"/>
 <part name="JP1" library="nonolith" deviceset="HEADER-1X3" device="ROUND"/>
-<part name="PROG" library="dp_devices" deviceset="HEADER_PRG_AVR_ICSP" device=""/>
+<part name="PROG" library="nonolith" deviceset="CON_HEADER_PRG_AVR_ICSP" device=""/>
 <part name="CN1" library="nonolith" deviceset="USB" device="MICROB"/>
 <part name="U$4" library="nonolith" deviceset="GND" device=""/>
 <part name="U$5" library="nonolith" deviceset="GND" device=""/>
@@ -2513,7 +2499,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <instance part="R14" gate="G$1" x="86.36" y="30.48"/>
 <instance part="C3" gate="G$1" x="17.78" y="190.5" rot="R270"/>
 <instance part="JP1" gate="A" x="215.9" y="195.58" rot="R270"/>
-<instance part="PROG" gate="G$1" x="203.2" y="30.48" rot="MR180"/>
+<instance part="PROG" gate="J" x="203.2" y="30.48" rot="MR180"/>
 <instance part="CN1" gate="G$1" x="218.44" y="63.5" rot="R180"/>
 <instance part="U$4" gate="G$1" x="205.74" y="66.04"/>
 <instance part="U$5" gate="G$1" x="175.26" y="2.54" rot="MR0"/>
@@ -2779,7 +2765,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <segment>
 <wire x1="210.82" y1="33.02" x2="215.9" y2="33.02" width="0.254" layer="91"/>
 <label x="215.9" y="33.02" size="1.27" layer="95" rot="MR180" xref="yes"/>
-<pinref part="PROG" gate="G$1" pin="GND"/>
+<pinref part="PROG" gate="J" pin="GND"/>
 </segment>
 <segment>
 <pinref part="CN1" gate="G$1" pin="GND"/>
@@ -2919,7 +2905,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <segment>
 <wire x1="195.58" y1="27.94" x2="190.5" y2="27.94" width="0.254" layer="91"/>
 <label x="190.5" y="27.94" size="1.27" layer="95" rot="MR0" xref="yes"/>
-<pinref part="PROG" gate="G$1" pin="MISO"/>
+<pinref part="PROG" gate="J" pin="MISO"/>
 </segment>
 </net>
 <net name="PDI-CLK" class="0">
@@ -2931,7 +2917,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <segment>
 <wire x1="195.58" y1="33.02" x2="190.5" y2="33.02" width="0.254" layer="91"/>
 <label x="190.5" y="33.02" size="1.27" layer="95" rot="MR0" xref="yes"/>
-<pinref part="PROG" gate="G$1" pin="RST"/>
+<pinref part="PROG" gate="J" pin="RST"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -2974,7 +2960,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <segment>
 <wire x1="215.9" y1="27.94" x2="210.82" y2="27.94" width="0.254" layer="91"/>
 <label x="215.9" y="27.94" size="1.27" layer="95" rot="MR180" xref="yes"/>
-<pinref part="PROG" gate="G$1" pin="+V"/>
+<pinref part="PROG" gate="J" pin="+V"/>
 </segment>
 </net>
 <net name="VOUT-A" class="0">
@@ -3204,7 +3190,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <segment>
 <wire x1="215.9" y1="30.48" x2="210.82" y2="30.48" width="0.254" layer="91"/>
 <label x="215.9" y="30.48" size="1.27" layer="95" rot="MR180" xref="yes"/>
-<pinref part="PROG" gate="G$1" pin="MOSI"/>
+<pinref part="PROG" gate="J" pin="MOSI"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="TXD0/OC0D/PE3"/>
