@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.3">
+<eagle version="6.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -2490,6 +2490,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <part name="U$24" library="nonolith" deviceset="GND" device=""/>
 <part name="U$31" library="nonolith" deviceset="GND" device=""/>
 <part name="U$33" library="nonolith" deviceset="GND" device=""/>
+<part name="R12" library="nonolith" deviceset="RESISTOR" device="0603"/>
 </parts>
 <sheets>
 <sheet>
@@ -2540,7 +2541,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <instance part="C15" gate="G$1" x="175.26" y="220.98"/>
 <instance part="C4" gate="G$1" x="160.02" y="139.7" rot="R90"/>
 <instance part="R2" gate="G$1" x="124.46" y="157.48" rot="R180"/>
-<instance part="C10" gate="G$1" x="119.38" y="170.18" rot="R180"/>
+<instance part="C10" gate="G$1" x="119.38" y="165.1" rot="R180"/>
 <instance part="JP5" gate="A" x="228.6" y="172.72"/>
 <instance part="R5" gate="G$1" x="195.58" y="119.38"/>
 <instance part="C12" gate="G$1" x="134.62" y="172.72"/>
@@ -2600,6 +2601,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <instance part="RN2" gate="B" x="205.74" y="114.3" rot="R270"/>
 <instance part="U$31" gate="G$1" x="53.34" y="111.76"/>
 <instance part="U$33" gate="G$1" x="119.38" y="96.52"/>
+<instance part="R12" gate="G$1" x="119.38" y="172.72" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -3456,8 +3458,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="OPA-A" gate="G$1" pin="VO"/>
 <pinref part="RS-A" gate="G$1" pin="1"/>
 <wire x1="187.96" y1="208.28" x2="182.88" y2="208.28" width="0.254" layer="91"/>
-<pinref part="C10" gate="G$1" pin="P$2"/>
-<wire x1="119.38" y1="172.72" x2="119.38" y2="182.88" width="0.254" layer="91"/>
+<wire x1="119.38" y1="177.8" x2="119.38" y2="182.88" width="0.254" layer="91"/>
 <wire x1="119.38" y1="182.88" x2="187.96" y2="182.88" width="0.254" layer="91"/>
 <wire x1="187.96" y1="182.88" x2="187.96" y2="160.02" width="0.254" layer="91"/>
 <pinref part="U$13" gate="G$1" pin="VI+"/>
@@ -3465,6 +3466,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="187.96" y1="182.88" x2="187.96" y2="208.28" width="0.254" layer="91"/>
 <junction x="187.96" y="182.88"/>
 <junction x="187.96" y="208.28"/>
+<pinref part="R12" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="VIN-A" class="0">
@@ -3488,7 +3490,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="R2" gate="G$1" pin="2"/>
 <pinref part="C10" gate="G$1" pin="P$1"/>
 <junction x="119.38" y="157.48"/>
-<wire x1="119.38" y1="165.1" x2="119.38" y2="157.48" width="0.254" layer="91"/>
+<wire x1="119.38" y1="160.02" x2="119.38" y2="157.48" width="0.254" layer="91"/>
 <wire x1="86.36" y1="157.48" x2="119.38" y2="157.48" width="0.254" layer="91"/>
 </segment>
 </net>
@@ -3644,6 +3646,12 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <pinref part="JP5" gate="A" pin="4"/>
 <wire x1="226.06" y1="170.18" x2="220.98" y2="170.18" width="0.254" layer="91"/>
 <label x="220.98" y="170.18" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="N$14" class="0">
+<segment>
+<pinref part="R12" gate="G$1" pin="1"/>
+<pinref part="C10" gate="G$1" pin="P$2"/>
 </segment>
 </net>
 </nets>
