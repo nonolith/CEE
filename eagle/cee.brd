@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.1">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -2795,13 +2795,11 @@ Mouser P/N - 649-10118192-0001LF</description>
 <wire x1="2.5" y1="-2.5" x2="-1.75" y2="-2.5" width="0.1016" layer="51"/>
 <wire x1="-1.75" y1="-2.5" x2="-2.5" y2="-2.5" width="0.1016" layer="51"/>
 <wire x1="-2.5" y1="-2.5" x2="-2.5" y2="2.5" width="0.1016" layer="51"/>
-<wire x1="-1.75" y1="-2.5" x2="-2.5" y2="-1.75" width="0.127" layer="51"/>
 <wire x1="2.7305" y1="3.3655" x2="2.7305" y2="-3.3655" width="0.1016" layer="21"/>
 <wire x1="2.7305" y1="-3.3655" x2="-2.7305" y2="-3.3655" width="0.1016" layer="21"/>
 <wire x1="-2.7305" y1="-3.3655" x2="-2.7305" y2="3.3655" width="0.1016" layer="21"/>
 <wire x1="-2.7305" y1="3.3655" x2="2.7305" y2="3.3655" width="0.1016" layer="21"/>
 <circle x="-3.254" y="-2.238" radius="0.3175" width="0" layer="29"/>
-<circle x="-3.254" y="-2.238" radius="0.3175" width="0" layer="21"/>
 <smd name="6" x="-1.6" y="2.108" dx="1" dy="2" layer="1"/>
 <smd name="5" x="0" y="2.108" dx="1" dy="2" layer="1"/>
 <smd name="4" x="1.6" y="2.108" dx="1" dy="2" layer="1"/>
@@ -2819,6 +2817,11 @@ Mouser P/N - 649-10118192-0001LF</description>
 <rectangle x1="-0.125" y1="-0.375" x2="0.125" y2="-0.125" layer="21" rot="R90"/>
 <rectangle x1="-0.425" y1="0.125" x2="-0.175" y2="0.375" layer="21" rot="R90"/>
 <rectangle x1="0.175" y1="0.125" x2="0.425" y2="0.375" layer="21" rot="R90"/>
+<wire x1="-3.302" y1="-2.159" x2="-3.302" y2="-2.921" width="0.127" layer="21"/>
+<wire x1="3.302" y1="2.921" x2="3.683" y2="2.921" width="0.127" layer="21"/>
+<wire x1="4.064" y1="2.921" x2="3.683" y2="2.921" width="0.127" layer="21"/>
+<wire x1="3.683" y1="2.921" x2="3.683" y2="3.302" width="0.127" layer="21"/>
+<wire x1="3.683" y1="2.921" x2="3.683" y2="2.54" width="0.127" layer="21"/>
 </package>
 <package name="NX8045GB">
 <description>package for SMD crystal - a'la &lt;a href="http://media.digikey.com/pdf/Data%20Sheets/NDK%20PDFs/NX8045GB.pdf"&gt;644-1018-1-ND&lt;/a&gt;</description>
@@ -6250,7 +6253,7 @@ This is the mechanical footprint for a #4 phillips button head screw. Use the ke
 <clearance class="0" value="0.127"/>
 </class>
 </classes>
-<designrules>
+<designrules name="default">
 <description language="de">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
 &lt;p&gt;
 Die Standard-Design-Rules sind so gewählt, dass sie für 
