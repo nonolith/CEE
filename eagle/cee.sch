@@ -710,7 +710,6 @@ Mouser P/N - 649-10118192-0001LF</description>
 <wire x1="2.7305" y1="-3.3655" x2="-2.7305" y2="-3.3655" width="0.1016" layer="21"/>
 <wire x1="-2.7305" y1="-3.3655" x2="-2.7305" y2="3.3655" width="0.1016" layer="21"/>
 <wire x1="-2.7305" y1="3.3655" x2="2.7305" y2="3.3655" width="0.1016" layer="21"/>
-<circle x="-3.254" y="-2.238" radius="0.3175" width="0" layer="29"/>
 <smd name="6" x="-1.6" y="2.108" dx="1" dy="2" layer="1"/>
 <smd name="5" x="0" y="2.108" dx="1" dy="2" layer="1"/>
 <smd name="4" x="1.6" y="2.108" dx="1" dy="2" layer="1"/>
