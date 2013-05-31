@@ -1,0 +1,26 @@
+| Part                      | PCB Name              | Value           | Package | Part Number        | Qty. |
+| ------------------------- | --------------------- |---------------- |---------|------------------- |------|
+| microcontroller           | IC1                   |                 | QFN-44  | ATXMEGA32A4U-AU    | 1    |
+| digital-analog convertor  | DAC                   |                 | SO-14   | MCP4922T-E/SLCT-ND | 1    |
+| female right-angle header | JP5                   |                 | 1x5 .1" | S5480-ND           | 1    |
+| opamp                     | OPA-C                 |                 | SO-14   | AD8608ARZ-ND       | 1    |
+| voltage reference         | 1.25REF               | 1.25V, 0.5%     | SOT23-3 | MAX6101EUR+TCT-ND  | 1    |
+| voltage reference         | 2.5REF                | 2.5V, 0.5%      | SOT23-3 | MAX6102EUR+TCT-ND  | 1    |
+| voltage regulator         | 3.3VREG               | 3.3V, 250mA, 1% | SOT23-3 | MCP1700T-3302E/TT  | 1    |
+| led                       | LED1                  | red, 10mA, 2V   | 0603    | 859-LTST-C190EKT   | 1    |
+| mini USB connector        | USB                   |                 | miniUSB | 154-15320-E        | 1    |
+| resistor                  | R5                    | 15o, 1/4w, 5%   | 1206    | P15ECT-ND          | 1    |
+| resistor                  | R6                    | 130o, 1/10w, 5% | 0603    | P130HCT-ND         | 1    |
+| opamp                     | OPA-A OPA-B           |                 | QFN-12  | 595-OPA567AIRHGT   | 2    |
+| opamp                     | CS-A CS-B             |                 | SO-08   | MAX9919FASA+       | 2    |
+| switch                    | SW-A SW-B             |                 | SOT23-6 | 296-17587-1-ND     | 2    |
+| capacitor                 | C15 C16               | 47uF, 10V, 20%  | 1206    | 587-1780-1-ND      | 2    |
+| capacitor                 | C10, C11              | 1nF, 50V, 5%    | 0603    | 445-1293-1-ND      | 2    |
+| capacitor                 | C21, C22              | 330pF, 50V, 5%  | 0603    | 445-1287-1-ND      | 2    |
+| resistor                  | RIS-A RIS-B           | 5.6ko, 1/10w, 5%| 0603    | P5.6KGCT-ND        | 2    |
+| resistor                  | RS-A RS-B             | .07o, 1/4w, 1%  | 1206    | WSLC-.07CT-ND      | 2    |
+| resistor network          | RN1 RN2               | 10ko, 1/16w, 5% | 1206    | Y4103CT-ND         | 2    |
+| capacitor                 | C6 C7 C12             | 1uF, 25V, 20%   | 0603    | 490-3895-1-ND      | 3    |
+| resistor                  | R1 R2 R3 R4           | 10ko, 1/8w, 5%  | 0603    | 311-10KGRCT-ND     | 4    |
+| capacitor                 | C1 C4 C14 C17 C18 C19 | .1uF, 25V, 10%  | 0603    | 445-1316-1-ND      | 6    |
+| capacitor                 | C2 C3 C5 C8 C9 C13    | .01uF, 25V, 10% | 0603    | 311-1360-1-ND      | 6    |
