@@ -122,7 +122,7 @@
 <text x="2.2606" y="10.8204" size="0.889" layer="25" font="vector" ratio="12" rot="R90">EXPANSION</text>
 <text x="12.065" y="47.5488" size="0.889" layer="25" font="vector" ratio="12" rot="R180">OPA-B</text>
 <text x="38.0238" y="46.482" size="0.889" layer="25" font="vector" ratio="12">OPA-A</text>
-<text x="32.2072" y="2.54" size="1.27" layer="25" font="vector" ratio="12">Nonolith Labs</text>
+<text x="32.2072" y="1.778" size="1.27" layer="25" font="vector" ratio="12">Nonolith Labs</text>
 <text x="20.32" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">B</text>
 <text x="30.48" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">A</text>
 <text x="14.859" y="49.784" size="0.8128" layer="21" rot="R90">EXT</text>
@@ -142,7 +142,7 @@
 <text x="5.08" y="18.288" size="0.762" layer="25" font="vector" ratio="11" rot="R180">chA</text>
 <text x="5.08" y="11.176" size="0.762" layer="25" font="vector" ratio="11" rot="R180">GND</text>
 <text x="7.366" y="11.176" size="0.762" layer="25" font="vector" ratio="11" rot="R180">5v</text>
-<text x="13.335" y="2.54" size="1.016" layer="25" font="vector" ratio="12">1.0</text>
+<text x="13.335" y="1.778" size="1.016" layer="25" font="vector" ratio="12">1.1</text>
 <text x="22.86" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
 <text x="25.4" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">5</text>
 <text x="27.94" y="71" size="1.27" layer="25" font="vector" ratio="12" rot="SR180">G</text>
@@ -6168,13 +6168,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 </library>
 <library name="microbuilder">
 <packages>
-<package name="TESTPOINT_ROUND_2MM">
-<description>Testpoint - Round 2mm</description>
-<circle x="0" y="0" radius="1.3029" width="0.127" layer="21"/>
-<smd name="P$1" x="0" y="0" dx="2" dy="2" layer="1" roundness="100" cream="no"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
-</package>
 <package name="CHIPLED_0603">
 <description>&lt;b&gt;CHIPLED 0603&lt;/b&gt;</description>
 <wire x1="-0.3" y1="0.8" x2="0.3" y2="0.8" width="0.1016" layer="51" curve="170.055574"/>
@@ -6494,12 +6487,12 @@ design rules under a new name.</description>
 <attribute name="NAME" x="16.0782" y="33.274" size="0.762" layer="25" font="vector" ratio="10"/>
 </element>
 <element name="R4" library="nonolith" package="0603" value="10ko" x="44.8056" y="46.1264"/>
-<element name="U$1" library="OSHW" package="OSHW_8X200_NOTEXT" value="" x="48.1076" y="32.2326" rot="R90"/>
+<element name="U$1" library="OSHW" package="OSHW_8X200_NOTEXT" value="" x="48.1076" y="30.2006" rot="R90"/>
 <element name="C19" library="nonolith" package="0603" value=".1uF" x="6.1722" y="32.131" smashed="yes" rot="R180">
 <attribute name="NAME" x="5.842" y="33.2486" size="0.762" layer="25" font="vector" ratio="10"/>
 </element>
-<element name="U$2" library="nonolith" package="LOGO_CEE" value="" x="10.4902" y="4.1148"/>
-<element name="U$3" library="nonolith" package="LOGO_NONOLITH" value="" x="34.7472" y="4.572"/>
+<element name="U$2" library="nonolith" package="LOGO_CEE" value="" x="10.4902" y="3.6068"/>
+<element name="U$3" library="nonolith" package="LOGO_NONOLITH" value="" x="32.2072" y="3.81"/>
 <element name="C21" library="nonolith" package="0603" value="330pF" x="28.3972" y="41.0718" smashed="yes" rot="R90">
 <attribute name="NAME" x="30.2006" y="39.4462" size="0.762" layer="25" font="vector" ratio="10" rot="R90"/>
 </element>
@@ -6522,14 +6515,6 @@ design rules under a new name.</description>
 </element>
 <element name="R5" library="nonolith" package="1206" value="15o" x="25.0254" y="65.532" smashed="yes" rot="R90">
 <attribute name="NAME" x="26.9812" y="64.262" size="0.762" layer="25" font="vector" ratio="10" rot="R90"/>
-</element>
-<element name="FID1" library="microbuilder" package="TESTPOINT_ROUND_2MM" value="" x="45.7708" y="29.21" smashed="yes">
-<attribute name="NAME" x="44.5008" y="30.734" size="0.762" layer="25" font="vector" ratio="12"/>
-<attribute name="VALUE" x="43.2308" y="26.67" size="1.27" layer="27"/>
-</element>
-<element name="FID2" library="microbuilder" package="TESTPOINT_ROUND_2MM" value="" x="36.068" y="73" smashed="yes">
-<attribute name="NAME" x="34.798" y="74.778" size="0.762" layer="25" font="vector" ratio="12"/>
-<attribute name="VALUE" x="33.528" y="70.46" size="1.27" layer="27"/>
 </element>
 <element name="USB1" library="dp_devices" package="CONN_USB_MINI-B" value="CON-USB-MINI-BUSB1" x="25" y="4.826" smashed="yes">
 <attribute name="NAME" x="24.302" y="11.088" size="0.762" layer="25" font="vector" ratio="12"/>

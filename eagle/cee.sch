@@ -1858,43 +1858,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 </library>
 <library name="microbuilder">
 <packages>
-<package name="TESTPOINT_SMT">
-<description>Surface Mount Test Point - Compact SMT</description>
-<wire x1="-2.75" y1="2" x2="2.75" y2="2" width="0.127" layer="21"/>
-<wire x1="2.75" y1="2" x2="2.75" y2="-2" width="0.127" layer="21"/>
-<wire x1="2.75" y1="-2" x2="-2.75" y2="-2" width="0.127" layer="21"/>
-<wire x1="-2.75" y1="-2" x2="-2.75" y2="2" width="0.127" layer="21"/>
-<smd name="P$1" x="0" y="0" dx="4.7" dy="3.4" layer="1"/>
-<text x="-2.54" y="2.286" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-2.794" size="0.4064" layer="25">&gt;VALUE</text>
-</package>
-<package name="TESTPOINT_PAD_2MM">
-<description>Testpoint - Pad</description>
-<wire x1="-1.27" y1="1.27" x2="1.27" y2="1.27" width="0.127" layer="21"/>
-<wire x1="1.27" y1="1.27" x2="1.27" y2="-1.27" width="0.127" layer="21"/>
-<wire x1="1.27" y1="-1.27" x2="-1.27" y2="-1.27" width="0.127" layer="21"/>
-<wire x1="-1.27" y1="-1.27" x2="-1.27" y2="1.27" width="0.127" layer="21"/>
-<smd name="P$1" x="0" y="0" dx="2" dy="2" layer="1" cream="no"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
-</package>
-<package name="TESTPOINT_ROUND_2MM">
-<description>Testpoint - Round 2mm</description>
-<circle x="0" y="0" radius="1.3029" width="0.127" layer="21"/>
-<smd name="P$1" x="0" y="0" dx="2" dy="2" layer="1" roundness="100" cream="no"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-2.54" size="1.27" layer="27">&gt;VALUE</text>
-</package>
-<package name="1X01_ROUND">
-<pad name="1" x="0" y="0" drill="1" diameter="1.6764" rot="R90"/>
-<text x="-1.3462" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
-</package>
-<package name="PAD-1.5X2.0">
-<description>1.5 x 2.0mm SMT pad (no solder paste)</description>
-<smd name="P$1" x="0" y="0" dx="1.5" dy="2" layer="1" cream="no"/>
-</package>
 <package name="CHIPLED_1206">
 <description>&lt;b&gt;CHIPLED 1206&lt;/b&gt;</description>
 <wire x1="-0.4" y1="1.6" x2="0.4" y2="1.6" width="0.1016" layer="51" curve="172.619069"/>
@@ -1999,12 +1962,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 </package>
 </packages>
 <symbols>
-<symbol name="TESTPOINT">
-<circle x="0" y="3.81" radius="1.27" width="0.254" layer="94"/>
-<text x="-2.54" y="7.62" size="1.27" layer="95">&gt;NAME</text>
-<text x="-2.54" y="5.715" size="1.27" layer="95">&gt;VALUE</text>
-<pin name="P$1" x="0" y="0" visible="off" length="short" rot="R90"/>
-</symbol>
 <symbol name="LED">
 <wire x1="-2.54" y1="1.27" x2="-2.54" y2="-1.27" width="0.254" layer="94"/>
 <wire x1="-2.54" y1="-1.27" x2="0" y2="0" width="0.254" layer="94"/>
@@ -2026,62 +1983,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="TESTPOINT" prefix="TP" uservalue="yes">
-<description>&lt;b&gt;Test Point&lt;/b&gt;
-&lt;p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;b&gt;TESTPOINT_SMT&lt;/b&gt; - Compact Surface Mount Test Point [Digikey: 5016KTR-ND]&lt;/li&gt;
-&lt;li&gt;&lt;b&gt;TESTPOINT_PAD&lt;/b&gt; - Square Pad (2mm)&lt;/li&gt;
-&lt;li&gt;&lt;b&gt;TESTPOINT_SMT&lt;/b&gt; - Round Pad (2mm)&lt;/li&gt;
-&lt;li&gt;&lt;b&gt;TESTPOINT_0.1"&lt;/b&gt; - 0.1" Header&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/p&gt;</description>
-<gates>
-<gate name="G$1" symbol="TESTPOINT" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="TESTPOINT_SMT">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="PAD" package="TESTPOINT_PAD_2MM">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="ROUND2MM" package="TESTPOINT_ROUND_2MM">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0.1&quot;" package="1X01_ROUND">
-<connects>
-<connect gate="G$1" pin="P$1" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="1.5X2.0MM_NOCREAM" package="PAD-1.5X2.0">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="LED" prefix="LED" uservalue="yes">
 <description>&lt;p&gt;&lt;b&gt;LED&lt;/b&gt;&lt;/p&gt;
 &lt;b&gt;0603&lt;/b&gt; - 0603 Surface Mount Package
@@ -2213,8 +2114,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 <part name="RN2" library="nonolith" deviceset="RNETWORK" device="" value="10ko"/>
 <part name="JP5" library="nonolith" deviceset="HEADER-1X5" device="ROUND"/>
 <part name="R5" library="nonolith" deviceset="RESISTOR" device="1206" value="15o"/>
-<part name="FID1" library="microbuilder" deviceset="TESTPOINT" device="ROUND2MM"/>
-<part name="FID2" library="microbuilder" deviceset="TESTPOINT" device="ROUND2MM"/>
 <part name="USB1" library="dp_devices" deviceset="CON-USB-MINI-B" device="USB1"/>
 <part name="LED1" library="microbuilder" deviceset="LED" device="0603"/>
 <part name="R6" library="nonolith" deviceset="RESISTOR" device="0603"/>
@@ -2296,8 +2195,6 @@ adjusted pad dimesion (0.5 x 3.3 mm) on pin 1 to 5</description>
 <instance part="RN2" gate="D" x="144.78" y="-48.26"/>
 <instance part="JP5" gate="A" x="228.6" y="-38.1"/>
 <instance part="R5" gate="G$1" x="215.9" y="-38.1"/>
-<instance part="FID1" gate="G$1" x="129.54" y="-96.52"/>
-<instance part="FID2" gate="G$1" x="137.16" y="-96.52"/>
 <instance part="USB1" gate="USB" x="-48.26" y="-101.6"/>
 <instance part="LED1" gate="G$1" x="198.12" y="-5.08"/>
 <instance part="R6" gate="G$1" x="185.42" y="-5.08"/>
