@@ -21,7 +21,7 @@
 | resistor                  | RS-A RS-B             | .07o, 1/4w, 1%  | 1206    | WSLC-.07CT-ND      | 2    |
 | resistor network          | RN1 RN2               | 10ko, 1/16w, 5% | 1206    | Y4103CT-ND         | 2    |
 | capacitor                 | C6 C7 C12             | 1uF, 25V, 20%   | 0603    | 490-3895-1-ND      | 3    |
-| resistor                  | R1 R2            | 1ko, 1/8w, 5%  | 0603    | 311-1.1KGRCT-ND     | 2    |
+| resistor                  | R1 R2            | 1.1ko, 1/8w, 5%  | 0603    | 311-1.1KGRCT-ND     | 2    |
 | resistor                  | R3 R4           | 10ko, 1/8w, 5%  | 0603    | 311-10KGRCT-ND     | 2    |
 | capacitor                 | C1 C4 C14 C17 C18 C19 | .1uF, 25V, 10%  | 0603    | 445-1316-1-ND      | 6    |
 | capacitor                 | C2 C3 C5 C8 C9 C13    | .01uF, 25V, 10% | 0603    | 311-1360-1-ND      | 6    |
